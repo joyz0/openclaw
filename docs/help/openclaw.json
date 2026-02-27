@@ -1,0 +1,388 @@
+{
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "dashscope/qwen3.5-plus"
+      },
+      "thinkingLevel": "medium",
+      "verboseLevel": "off",
+      "usage": "tokens",
+      "sendPolicy": "reply",
+      "groupActivation": "mention",
+      "workspace": "~/.openclaw/workspace",
+      "sandbox": {
+        "mode": "non-main"
+      },
+      "subagents": {
+        "allowAgents": ["*"],
+        "maxConcurrent": 3,
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 5,
+        "archiveAfterMinutes": 60,
+        "model": {
+          "primary": "dashscope/qwen3.5-plus"
+        },
+        "thinking": "medium",
+        "runTimeoutSeconds": 300
+      },
+      "memorySearch": {
+        "enabled": true,
+        "retention": "1d",
+        "maxResults": 5
+      },
+      "humanDelay": {
+        "enabled": true,
+        "min": 500,
+        "max": 2000
+      },
+      "heartbeat": {
+        "every": "30m",
+        "activeHours": {
+          "start": "08:00",
+          "end": "22:00"
+        }
+      },
+      "maxConcurrent": 3,
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokens": 10000,
+        "keepRecentTokens": 50000,
+        "reserveTokensFloor": 5000,
+        "maxHistoryShare": 0.5,
+        "maxTokens": 100000
+      },
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h",
+        "keepLastAssistants": 3,
+        "softTrimRatio": 0.8,
+        "hardClearRatio": 0.9
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "Main Assistant",
+        "workspace": "~/.openclaw/workspace-main",
+        "model": {
+          "primary": "dashscope/qwen3.5-plus"
+        },
+        "identity": {
+          "name": "Main Assistant",
+          "role": "AI assistant for general tasks and canvas operations"
+        },
+        "groupChat": {
+          "mentionRequired": true,
+          "replyAll": false
+        },
+        "tools": {
+          "profile": "full",
+          "allow": ["group:fs", "group:runtime", "browser", "canvas", "nodes"],
+          "deny": ["system"]
+        },
+        "params": {
+          "temperature": 0.7,
+          "cacheRetention": "short",
+          "maxOutputTokens": 4096
+        }
+      },
+      {
+        "id": "work",
+        "name": "Work Assistant",
+        "workspace": "~/.openclaw/workspace-work",
+        "model": {
+          "primary": "anthropic/claude-opus-4-6"
+        },
+        "identity": {
+          "name": "Work Assistant",
+          "role": "AI assistant specialized in coding and project management"
+        },
+        "groupChat": {
+          "mentionRequired": true,
+          "replyAll": false
+        },
+        "tools": {
+          "profile": "coding",
+          "allow": ["group:fs", "group:runtime", "browser", "git", "npm"],
+          "deny": ["system"]
+        },
+        "params": {
+          "temperature": 0.5,
+          "cacheRetention": "short",
+          "maxOutputTokens": 8192
+        }
+      },
+      {
+        "id": "personal",
+        "name": "Personal Assistant",
+        "workspace": "~/.openclaw/workspace-personal",
+        "model": {
+          "primary": "dashscope/qwen3.5-plus"
+        },
+        "identity": {
+          "name": "Personal Assistant",
+          "role": "AI assistant for personal tasks and messaging"
+        },
+        "groupChat": {
+          "mentionRequired": true,
+          "replyAll": false
+        },
+        "tools": {
+          "profile": "messaging",
+          "allow": ["group:fs", "sessions_list"],
+          "deny": ["system"]
+        },
+        "params": {
+          "temperature": 0.8,
+          "cacheRetention": "short",
+          "maxOutputTokens": 4096
+        }
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "main",
+      "match": { "channel": "feishu", "peer": { "kind": "direct", "id": "ou_1234567" } }
+    },
+    {
+      "agentId": "personal",
+      "match": { "channel": "whatsapp", "peer": { "kind": "direct", "id": "+1234567890" } }
+    },
+    {
+      "agentId": "work",
+      "match": { "channel": "telegram", "peer": { "kind": "direct", "id": "123456789" } }
+    },
+    {
+      "agentId": "main",
+      "match": { "channel": "discord", "peer": { "kind": "direct", "id": "123456789012345678" } }
+    }
+  ],
+  "routing": {
+    "channels": {
+      "feishu": "main",
+      "whatsapp": "personal",
+      "telegram": "work",
+      "discord": "main"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "controlUi": {
+      "allowInsecureAuth": false
+    },
+    "auth": {
+      "mode": "token",
+      "token": ""
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "browser": {
+    "enabled": true,
+    "headless": true,
+    "noSandbox": false,
+    "defaultProfile": "clawd",
+    "profiles": {
+      "clawd": {
+        "cdpPort": 18800,
+        "color": "#FF4500"
+      }
+    }
+  },
+  "canvas": {
+    "enabled": true
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "webhookPath": "/webhook/feishu",
+      "allowFrom": ["ou_12345f"],
+      "accounts": {
+        "main": {
+          "appId": "",
+          "appSecret": "",
+          "verifyToken": "YOUR_FEISHU_VERIFY_TOKEN",
+          "encryptKey": "YOUR_FEISHU_ENCRYPT_KEY",
+          "botName": "OpenClaw"
+        }
+      }
+    },
+    "whatsapp": {
+      "enabled": true,
+      "allowFrom": ["+1234567890", "+0987654321"],
+      "groups": ["*"]
+    },
+    "telegram": {
+      "enabled": true,
+      "botToken": "YOUR_TELEGRAM_BOT_TOKEN",
+      "allowFrom": ["123456789"],
+      "groups": {
+        "*": {
+          "requireMention": true
+        }
+      },
+      "dmPolicy": "pairing"
+    },
+    "slack": {
+      "enabled": true,
+      "botToken": "YOUR_SLACK_BOT_TOKEN",
+      "appToken": "YOUR_SLACK_APP_TOKEN",
+      "allowFrom": ["U123456789"],
+      "dmPolicy": "pairing"
+    },
+    "discord": {
+      "enabled": true,
+      "token": "YOUR_DISCORD_BOT_TOKEN",
+      "allowFrom": ["123456789012345678"],
+      "dmPolicy": "pairing",
+      "commands": {
+        "native": true,
+        "text": true
+      }
+    },
+    "signal": {
+      "enabled": false,
+      "account": "+1234567890"
+    },
+    "bluebubbles": {
+      "enabled": false,
+      "serverUrl": "http://localhost:1234",
+      "password": "your-bluebubbles-password",
+      "webhookPath": "/webhook/bluebubbles"
+    },
+    "webchat": {
+      "enabled": true
+    }
+  },
+  "nodes": {
+    "enabled": true,
+    "allowFrom": ["*"]
+  },
+  "cron": {
+    "enabled": true,
+    "tasks": [
+      {
+        "name": "daily-check",
+        "schedule": "0 9 * * *",
+        "command": "agent",
+        "args": ["--message", "What's on my agenda today?"]
+      }
+    ]
+  },
+  "skills": {
+    "enabled": true,
+    "clawhub": {
+      "enabled": true
+    }
+  },
+  "logging": {
+    "level": "info",
+    "redact": true,
+    "file": "~/.openclaw/logs/openclaw.log",
+    "maxFileSize": 10485760,
+    "maxFiles": 5
+  },
+  "media": {
+    "maxSizeMb": 25,
+    "tempDir": "~/.openclaw/temp"
+  },
+  "auth": {
+    "profiles": {
+      "dashscope:default": {
+        "provider": "dashscope",
+        "mode": "api_key",
+        "key": "YOUR_DASHSCOPE_API_KEY"
+      },
+      "anthropic:default": {
+        "provider": "anthropic",
+        "mode": "api_key",
+        "key": "YOUR_REAL_ANTHROPIC_API_KEY"
+      }
+    },
+    "order": {
+      "anthropic": ["anthropic:default"],
+      "dashscope": ["dashscope:default"]
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "dashscope": {
+        "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "qwen3.5-plus",
+            "name": "Qwen3.5 Plus",
+            "reasoning": true,
+            "contextWindow": 983616,
+            "maxTokens": 65536,
+            "compat": {
+              "supportsDeveloperRole": false,
+              "supportsReasoningEffort": false
+            }
+          },
+          {
+            "id": "qwen3-max-2026-01-23",
+            "name": "Qwen3 Max Thinking",
+            "reasoning": true,
+            "contextWindow": 262144,
+            "maxTokens": 32768,
+            "compat": {
+              "supportsDeveloperRole": false,
+              "supportsReasoningEffort": false
+            }
+          },
+          {
+            "id": "qwen3-coder-plus",
+            "name": "Qwen3 Coder Plus",
+            "contextWindow": 1000000,
+            "maxTokens": 65536
+          }
+        ]
+      },
+      "anthropic": {
+        "models": [
+          {
+            "id": "claude-opus-4-6",
+            "name": "Claude Opus",
+            "reasoning": true,
+            "contextWindow": 200000,
+            "maxTokens": 4096
+          }
+        ]
+      }
+    }
+  },
+  "network": {
+    "timeout": 30,
+    "retry": {
+      "count": 3,
+      "delay": 1000
+    }
+  },
+  "tools": {
+    "fs": {
+      "workspaceOnly": true
+    },
+    "agentToAgent": {
+      "allow": ["main", "work", "personal"]
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  }
+}
