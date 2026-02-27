@@ -64,7 +64,7 @@
         "id": "main",
         "default": true,
         "name": "Main Assistant",
-        "workspace": "~/.openclaw/workspace-main",
+        "workspace": "~/.openclaw/workspace",
         "model": {
           "primary": "dashscope/qwen3.5-plus"
         },
@@ -164,7 +164,8 @@
       "feishu": "main",
       "whatsapp": "personal",
       "telegram": "work",
-      "discord": "main"
+      "discord": "main",
+      "webchat": "main"
     }
   },
   "gateway": {
@@ -202,15 +203,12 @@
     "feishu": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "webhookPath": "/webhook/feishu",
       "allowFrom": ["ou_12345f"],
       "accounts": {
         "main": {
-          "appId": "",
-          "appSecret": "",
-          "verifyToken": "YOUR_FEISHU_VERIFY_TOKEN",
-          "encryptKey": "YOUR_FEISHU_ENCRYPT_KEY",
-          "botName": "OpenClaw"
+          "appId": "${FEISHU_APP_ID}",
+          "appSecret": "${FEISHU_APP_SECRET}",
+          "botName": "小螃蟹"
         }
       }
     },
@@ -221,7 +219,7 @@
     },
     "telegram": {
       "enabled": true,
-      "botToken": "YOUR_TELEGRAM_BOT_TOKEN",
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
       "allowFrom": ["123456789"],
       "groups": {
         "*": {
@@ -230,16 +228,9 @@
       },
       "dmPolicy": "pairing"
     },
-    "slack": {
-      "enabled": true,
-      "botToken": "YOUR_SLACK_BOT_TOKEN",
-      "appToken": "YOUR_SLACK_APP_TOKEN",
-      "allowFrom": ["U123456789"],
-      "dmPolicy": "pairing"
-    },
     "discord": {
       "enabled": true,
-      "token": "YOUR_DISCORD_BOT_TOKEN",
+      "token": "${DISCORD_BOT_TOKEN}",
       "allowFrom": ["123456789012345678"],
       "dmPolicy": "pairing",
       "commands": {
@@ -250,12 +241,6 @@
     "signal": {
       "enabled": false,
       "account": "+1234567890"
-    },
-    "bluebubbles": {
-      "enabled": false,
-      "serverUrl": "http://localhost:1234",
-      "password": "your-bluebubbles-password",
-      "webhookPath": "/webhook/bluebubbles"
     },
     "webchat": {
       "enabled": true
@@ -272,21 +257,21 @@
         "name": "daily-check",
         "schedule": "0 9 * * *",
         "command": "agent",
-        "args": ["--message", "What's on my agenda today?"]
+        "args": ["--message", "今天我的日程安排是什么？"]
       }
     ]
   },
   "skills": {
     "enabled": true,
     "clawhub": {
-      "enabled": true
+      "enabled": false
     }
   },
   "logging": {
     "level": "info",
     "redact": true,
     "file": "~/.openclaw/logs/openclaw.log",
-    "maxFileSize": 10485760,
+    "maxFileSize": 20971520,
     "maxFiles": 5
   },
   "media": {
@@ -298,12 +283,12 @@
       "dashscope:default": {
         "provider": "dashscope",
         "mode": "api_key",
-        "key": "YOUR_DASHSCOPE_API_KEY"
+        "key": "${DASHSCOPE_API_KEY}"
       },
       "anthropic:default": {
         "provider": "anthropic",
         "mode": "api_key",
-        "key": "YOUR_REAL_ANTHROPIC_API_KEY"
+        "key": "${ANTHROPIC_API_KEY}"
       }
     },
     "order": {
