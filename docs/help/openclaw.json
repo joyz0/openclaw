@@ -325,8 +325,10 @@
     "sessions": {
       "visibility": "all"
     },
-    "webSearch": {
-      "enabled": false
+    "web": {
+      "search": {
+        "enabled": false
+      }
     }
   }
 }
