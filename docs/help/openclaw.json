@@ -2,39 +2,38 @@
   "agents": {
     "defaults": {
       "model": {
+        "primary": "dashscope/qwen3.5-plus",
+        "fallbacks": ["dashscope/qwen3-max-2026-01-23"]
+      },
+      "workspace": "~/.openclaw/workspace",
+      "imageModel": {
         "primary": "dashscope/qwen3.5-plus"
       },
-      "thinkingLevel": "medium",
-      "verboseLevel": "off",
-      "usage": "tokens",
-      "sendPolicy": "reply",
-      "groupActivation": "mention",
-      "workspace": "~/.openclaw/workspace",
-      "sandbox": {
-        "mode": "non-main"
+      "models": {
+        "dashscope/qwen3.5-plus": { "alias": "qwen3.5-plus" },
+        "dashscope/qwen3-max-2026-01-23": { "alias": "qwen3-max" },
+        "dashscope/qwen3-coder-plus": { "alias": "qwen3-coder-plus" }
       },
-      "subagents": {
-        "allowAgents": ["*"],
-        "maxConcurrent": 3,
-        "maxSpawnDepth": 2,
-        "maxChildrenPerAgent": 5,
-        "archiveAfterMinutes": 60,
-        "model": {
-          "primary": "dashscope/qwen3.5-plus"
-        },
-        "thinking": "medium",
-        "runTimeoutSeconds": 300
+      "thinkingDefault": "low",
+      "verboseDefault": "off",
+      "elevatedDefault": "on",
+      "blockStreamingDefault": "off",
+      "blockStreamingBreak": "text_end",
+      "blockStreamingChunk": {
+        "minChars": 800,
+        "maxChars": 1200,
+        "breakPreference": "paragraph"
       },
-      "memorySearch": {
-        "enabled": true,
-        "retention": "1d",
-        "maxResults": 5
+      "blockStreamingCoalesce": {
+        "idleMs": 1000
       },
       "humanDelay": {
-        "enabled": true,
-        "min": 500,
-        "max": 2000
+        "mode": "natural"
       },
+      "timeoutSeconds": 600,
+      "mediaMaxMb": 5,
+      "typingIntervalSeconds": 5,
+      "maxConcurrent": 3,
       "heartbeat": {
         "every": "30m",
         "activeHours": {
@@ -42,21 +41,18 @@
           "end": "22:00"
         }
       },
-      "maxConcurrent": 3,
-      "compaction": {
-        "mode": "safeguard",
-        "reserveTokens": 10000,
-        "keepRecentTokens": 50000,
-        "reserveTokensFloor": 5000,
-        "maxHistoryShare": 0.5,
-        "maxTokens": 100000
-      },
-      "contextPruning": {
-        "mode": "cache-ttl",
-        "ttl": "1h",
-        "keepLastAssistants": 3,
-        "softTrimRatio": 0.8,
-        "hardClearRatio": 0.9
+      "sandbox": {
+        "mode": "non-main",
+        "perSession": true,
+        "workspaceRoot": "~/.openclaw/sandboxes",
+        "docker": {
+          "image": "openclaw-sandbox:bookworm-slim",
+          "workdir": "/workspace",
+          "readOnlyRoot": true,
+          "tmpfs": ["/tmp", "/var/tmp", "/run"],
+          "network": "none",
+          "user": "1000:1000"
+        }
       }
     },
     "list": [
@@ -64,27 +60,10 @@
         "id": "main",
         "default": true,
         "name": "Main Assistant",
-        "workspace": "~/.openclaw/workspace",
-        "model": {
-          "primary": "dashscope/qwen3.5-plus"
-        },
-        "identity": {
-          "name": "Main Assistant",
-          "role": "AI assistant for general tasks and canvas operations"
-        },
-        "groupChat": {
-          "mentionRequired": true,
-          "replyAll": false
-        },
         "tools": {
           "profile": "full",
           "allow": ["group:fs", "group:runtime", "browser", "canvas", "nodes"],
           "deny": ["system"]
-        },
-        "params": {
-          "temperature": 0.7,
-          "cacheRetention": "short",
-          "maxOutputTokens": 4096
         }
       },
       {
@@ -92,51 +71,22 @@
         "name": "Work Assistant",
         "workspace": "~/.openclaw/workspace-work",
         "model": {
-          "primary": "anthropic/claude-opus-4-6"
-        },
-        "identity": {
-          "name": "Work Assistant",
-          "role": "AI assistant specialized in coding and project management"
-        },
-        "groupChat": {
-          "mentionRequired": true,
-          "replyAll": false
+          "primary": "dashscope/qwen3-coder-plus"
         },
         "tools": {
           "profile": "coding",
-          "allow": ["group:fs", "group:runtime", "browser", "git", "npm"],
+          "allow": ["group:fs", "group:runtime", "browser", "git", "pnpm"],
           "deny": ["system"]
-        },
-        "params": {
-          "temperature": 0.5,
-          "cacheRetention": "short",
-          "maxOutputTokens": 8192
         }
       },
       {
         "id": "personal",
         "name": "Personal Assistant",
         "workspace": "~/.openclaw/workspace-personal",
-        "model": {
-          "primary": "dashscope/qwen3.5-plus"
-        },
-        "identity": {
-          "name": "Personal Assistant",
-          "role": "AI assistant for personal tasks and messaging"
-        },
-        "groupChat": {
-          "mentionRequired": true,
-          "replyAll": false
-        },
         "tools": {
           "profile": "messaging",
           "allow": ["group:fs", "sessions_list"],
           "deny": ["system"]
-        },
-        "params": {
-          "temperature": 0.8,
-          "cacheRetention": "short",
-          "maxOutputTokens": 4096
         }
       }
     ]
@@ -144,66 +94,56 @@
   "bindings": [
     {
       "agentId": "main",
-      "match": { "channel": "feishu", "peer": { "kind": "direct", "id": "ou_1234567" } }
+      "match": {
+        "channel": "feishu",
+        "peer": { "kind": "direct", "id": "ou_1234567" }
+      }
     },
     {
       "agentId": "personal",
-      "match": { "channel": "whatsapp", "peer": { "kind": "direct", "id": "+1234567890" } }
+      "match": {
+        "channel": "whatsapp",
+        "peer": { "kind": "direct", "id": "+1234567890" }
+      }
     },
     {
       "agentId": "work",
-      "match": { "channel": "telegram", "peer": { "kind": "direct", "id": "123456789" } }
+      "match": {
+        "channel": "telegram",
+        "peer": { "kind": "direct", "id": "123456789" }
+      }
     },
     {
       "agentId": "main",
-      "match": { "channel": "discord", "peer": { "kind": "direct", "id": "123456789012345678" } }
+      "match": {
+        "channel": "discord",
+        "peer": { "kind": "direct", "id": "123456789012345678" }
+      }
     }
   ],
-  "routing": {
-    "channels": {
-      "feishu": "main",
-      "whatsapp": "personal",
-      "telegram": "work",
-      "discord": "main",
-      "webchat": "main"
-    }
-  },
   "gateway": {
     "port": 18789,
     "mode": "local",
     "bind": "loopback",
     "controlUi": {
-      "allowInsecureAuth": false
+      "enabled": true,
+      "basePath": "/openclaw"
     },
     "auth": {
       "mode": "token",
-      "token": ""
+      "token": "YOUR_STRONG_GATEWAY_TOKEN_HERE",
+      "allowTailscale": true
     },
     "tailscale": {
       "mode": "off",
       "resetOnExit": false
     }
   },
-  "browser": {
-    "enabled": true,
-    "headless": true,
-    "noSandbox": false,
-    "defaultProfile": "clawd",
-    "profiles": {
-      "clawd": {
-        "cdpPort": 18800,
-        "color": "#FF4500"
-      }
-    }
-  },
-  "canvas": {
-    "enabled": true
-  },
   "channels": {
     "feishu": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "allowFrom": ["ou_12345f"],
+      "allowFrom": ["ou_1234567"],
       "accounts": {
         "main": {
           "appId": "${FEISHU_APP_ID}",
@@ -215,7 +155,7 @@
     "whatsapp": {
       "enabled": true,
       "allowFrom": ["+1234567890", "+0987654321"],
-      "groups": ["*"]
+      "groups": { "*": { "requireMention": true } }
     },
     "telegram": {
       "enabled": true,
@@ -232,63 +172,43 @@
       "enabled": true,
       "token": "${DISCORD_BOT_TOKEN}",
       "allowFrom": ["123456789012345678"],
-      "dmPolicy": "pairing",
-      "commands": {
-        "native": true,
-        "text": true
-      }
+      "dmPolicy": "pairing"
     },
     "signal": {
       "enabled": false,
       "account": "+1234567890"
-    },
-    "webchat": {
-      "enabled": true
     }
-  },
-  "nodes": {
-    "enabled": true,
-    "allowFrom": ["*"]
-  },
-  "cron": {
-    "enabled": true,
-    "tasks": [
-      {
-        "name": "daily-check",
-        "schedule": "0 9 * * *",
-        "command": "agent",
-        "args": ["--message", "今天我的日程安排是什么？"]
-      }
-    ]
   },
   "skills": {
-    "enabled": true,
-    "clawhub": {
-      "enabled": false
+    "allowBundled": ["peekaboo"],
+    "load": {
+      "extraDirs": ["~/Projects/agent-scripts/skills"]
+    },
+    "install": {
+      "preferBrew": false,
+      "nodeManager": "pnpm"
+    },
+    "entries": {
+      "peekaboo": {
+        "enabled": true,
+        "config": {
+          "timeout": 30000
+        }
+      },
+      "gemini": {
+        "enabled": false
+      }
     }
-  },
-  "logging": {
-    "level": "info",
-    "redact": true,
-    "file": "~/.openclaw/logs/openclaw.log",
-    "maxFileSize": 20971520,
-    "maxFiles": 5
-  },
-  "media": {
-    "maxSizeMb": 25,
-    "tempDir": "~/.openclaw/temp"
   },
   "auth": {
     "profiles": {
       "dashscope:default": {
         "provider": "dashscope",
-        "mode": "api_key",
-        "key": "${DASHSCOPE_API_KEY}"
+        "mode": "api_key"
       },
       "anthropic:default": {
         "provider": "anthropic",
-        "mode": "api_key",
-        "key": "${ANTHROPIC_API_KEY}"
+        "mode": "api_key"
       }
     },
     "order": {
@@ -300,8 +220,9 @@
     "mode": "merge",
     "providers": {
       "dashscope": {
-        "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "api": "openai-completions",
+        "baseUrl": "https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1",
+        "apiKey": "${env:DASHSCOPE_API_KEY}",
+        "api": "openai-responses",
         "models": [
           {
             "id": "qwen3.5-plus",
@@ -334,6 +255,8 @@
         ]
       },
       "anthropic": {
+        "baseUrl": "https://api.anthropic.com/v1",
+        "apiKey": "${env:ANTHROPIC_API_KEY}",
         "models": [
           {
             "id": "claude-opus-4-6",
@@ -346,21 +269,6 @@
       }
     }
   },
-  "network": {
-    "timeout": 30,
-    "retry": {
-      "count": 3,
-      "delay": 1000
-    }
-  },
-  "tools": {
-    "fs": {
-      "workspaceOnly": true
-    },
-    "agentToAgent": {
-      "allow": ["main", "work", "personal"]
-    }
-  },
   "commands": {
     "native": "auto",
     "nativeSkills": "auto",
@@ -368,6 +276,57 @@
     "ownerDisplay": "raw"
   },
   "session": {
-    "dmScope": "per-channel-peer"
+    "scope": "per-sender",
+    "reset": {
+      "mode": "daily",
+      "atHour": 4,
+      "idleMinutes": 60
+    },
+    "resetByChannel": {
+      "discord": {
+        "mode": "idle",
+        "idleMinutes": 10080
+      }
+    },
+    "resetTriggers": ["/new", "/reset"]
+  },
+  "cron": {
+    "enabled": true,
+    "maxConcurrentRuns": 2,
+    "sessionRetention": "24h",
+    "runLog": {
+      "maxBytes": "2mb",
+      "keepLines": 2000
+    }
+  },
+  "secrets": {
+    "providers": {
+      "default": {
+        "source": "env"
+      }
+    },
+    "defaults": {
+      "env": "default"
+    }
+  },
+  "logging": {
+    "level": "info",
+    "consoleLevel": "info",
+    "consoleStyle": "pretty",
+    "redactSensitive": "tools"
+  },
+  "tools": {
+    "fs": {
+      "workspaceOnly": true
+    },
+    "agentToAgent": {
+      "allow": ["main", "work", "personal"]
+    },
+    "sessions": {
+      "visibility": "all"
+    },
+    "webSearch": {
+      "enabled": false
+    }
   }
 }
