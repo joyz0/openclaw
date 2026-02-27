@@ -189,7 +189,7 @@
   "browser": { // 浏览器配置
     "enabled": true, // 是否启用浏览器
     "headless": true, // 是否以无头模式运行
-    "noSandbox": true, // 是否禁用沙箱
+    "noSandbox": false, // 是否禁用沙箱
     "defaultProfile": "clawd", // 默认浏览器配置文件
     "profiles": { // 浏览器配置文件列表
       "clawd": { // 配置文件名称
@@ -306,7 +306,7 @@
       "anthropic:default": { // Anthropic默认配置
         "provider": "anthropic", // 提供商
         "mode": "api_key", // 认证模式
-        "key": "YOUR_DASHSCOPE_API_KEY" // API密钥
+        "key": "YOUR_REAL_ANTHROPIC_API_KEY" // API密钥
       }
     },
     "order": { // 认证顺序
