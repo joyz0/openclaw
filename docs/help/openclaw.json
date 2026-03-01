@@ -41,10 +41,20 @@
           "end": "22:00"
         }
       },
+      "memorySearch": {
+        "provider": "openai",
+        "model": "text-embedding-v4",
+        "remote": {
+          "baseUrl": "https://dashscope.aliyuncs.com/api/v2/apps/protocols/compatible-mode/v1",
+          "apiKey": "${env:DASHSCOPE_API_KEY}",
+          "api": "openai-responses"
+        },
+        "extraPaths": ["../team-docs", "/srv/shared-notes"]
+      },
       "sandbox": {
         "mode": "non-main",
-        "perSession": true,
         "workspaceRoot": "~/.openclaw/sandboxes",
+        "scope": "agent",
         "docker": {
           "image": "openclaw-sandbox:bookworm-slim",
           "workdir": "/workspace",
@@ -63,7 +73,10 @@
         "tools": {
           "profile": "full",
           "allow": ["group:fs", "group:runtime", "browser", "canvas", "nodes"],
-          "deny": ["system"]
+          "deny": ["system"],
+          "fs": {
+            "workspaceOnly": false
+          }
         }
       },
       {
@@ -125,6 +138,7 @@
     "port": 18789,
     "mode": "local",
     "bind": "loopback",
+    "trustedProxies": [],
     "controlUi": {
       "enabled": true,
       "basePath": "/openclaw"
@@ -145,7 +159,7 @@
       "dmPolicy": "pairing",
       "allowFrom": ["ou_1234567"],
       "accounts": {
-        "main": {
+        "default": {
           "appId": "${env:FEISHU_APP_ID}",
           "appSecret": "${env:FEISHU_APP_SECRET}",
           "botName": "小螃蟹"
@@ -180,7 +194,7 @@
     }
   },
   "skills": {
-    "allowBundled": ["peekaboo"],
+    "allowBundled": ["weather", "summarize", "github", "healthcheck"],
     "load": {
       "extraDirs": ["~/Projects/agent-scripts/skills"]
     },
@@ -189,14 +203,17 @@
       "nodeManager": "pnpm"
     },
     "entries": {
-      "peekaboo": {
-        "enabled": true,
-        "config": {
-          "timeout": 30000
-        }
+      "weather": {
+        "enabled": true
       },
-      "gemini": {
-        "enabled": false
+      "summarize": {
+        "enabled": true
+      },
+      "github": {
+        "enabled": true
+      },
+      "healthcheck": {
+        "enabled": true
       }
     }
   },
