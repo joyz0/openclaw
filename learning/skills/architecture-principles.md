@@ -45,21 +45,20 @@
 7. [类型安全与 Schema 驱动](#7-类型安全与-schema-驱动)
 8. [日志与可观测性](#8-日志与可观测性)
 9. [安全与认证](#9-安全与认证)
-   - [9.4 安全威胁模型](#94-安全威胁模型)
 10. [模块边界与依赖注入](#10-模块边界与依赖注入)
 11. [媒体处理架构](#11-媒体处理架构)
 12. [内存管理系统](#12-内存管理系统)
 13. [错误处理系统](#13-错误处理系统)
-    - [13.5 数据迁移策略](#135-数据迁移策略)
+14. [数据迁移策略](#14-数据迁移策略)
 
 ### 项目管理篇
 
-14. [测试系统架构](#14-测试系统架构)
-15. [部署与发布系统](#15-部署与发布系统)
-16. [CI/CD 与工作流](#16-cicd-与工作流)
-17. [国际化系统](#17-国际化系统)
-18. [文档系统](#18-文档系统)
-19. [项目管理最佳实践](#19-项目管理最佳实践)
+15. [测试系统架构](#15-测试系统架构)
+16. [部署与发布系统](#16-部署与发布系统)
+17. [CI/CD 与工作流](#17-cicd-与工作流)
+18. [国际化系统](#18-国际化系统)
+19. [文档系统](#19-文档系统)
+20. [项目管理最佳实践](#20-项目管理最佳实践)
 
 ---
 
@@ -2520,9 +2519,9 @@ function formatErrorMessage(error: ClawError): string {
 
 ---
 
-## 13.5 数据迁移策略
+## 14 数据迁移策略
 
-### 13.5.1 核心理念
+### 14.1 核心理念
 
 **向后兼容，渐进迁移**
 
@@ -2531,7 +2530,7 @@ function formatErrorMessage(error: ClawError): string {
 - 保持向后兼容
 - 支持回滚机制
 
-### 13.5.2 Schema 版本化
+### 14.2 Schema 版本化
 
 ```typescript
 // 配置 Schema 包含版本号
@@ -2569,7 +2568,7 @@ async function migrateConfig(
 }
 ```
 
-### 13.5.3 迁移策略模式
+### 14.3 迁移策略模式
 
 ```typescript
 // 策略 1：启动时自动迁移
@@ -2619,7 +2618,7 @@ async function migrateSessionsGradually(
 }
 ```
 
-### 13.5.4 向后兼容规则
+### 14.4 向后兼容规则
 
 ```typescript
 // ✅ 兼容的变更
@@ -2664,7 +2663,7 @@ function migrateV1ToV2(config: ConfigV1): ConfigV2 {
 }
 ```
 
-### 13.5.5 迁移测试
+### 14.5 迁移测试
 
 ```typescript
 describe("Config Migration", () => {
@@ -2694,7 +2693,7 @@ describe("Config Migration", () => {
 });
 ```
 
-### 13.5.6 回滚机制
+### 14.6 回滚机制
 
 ```typescript
 // 迁移前备份
@@ -2729,7 +2728,7 @@ async function backupAndMigrate(
 // openclaw config rollback --to-version 2
 ```
 
-### 13.5.7 最佳实践
+### 14.7 最佳实践
 
 1. **版本化一切**：Schema、配置、数据格式都包含版本号
 2. **自动化迁移**：启动时自动检测并迁移旧版本
@@ -2741,9 +2740,9 @@ async function backupAndMigrate(
 
 ---
 
-## 14. 测试系统架构
+## 15. 测试系统架构
 
-### 14.1 核心理念
+### 15.1 核心理念
 
 **分层测试，自动化优先**
 
@@ -2752,7 +2751,7 @@ async function backupAndMigrate(
 - E2E 测试模拟真实场景
 - Docker 隔离测试环境
 
-### 14.2 测试金字塔
+### 15.2 测试金字塔
 
 ```
            ╱╲
@@ -2769,9 +2768,9 @@ async function backupAndMigrate(
                        ╲- Mock 外部依赖
 ```
 
-### 14.3 关键模式
+### 15.3 关键模式
 
-#### 14.3.1 测试分类模式
+#### 15.3.1 测试分类模式
 
 ```typescript
 // 单元测试（快速，隔离）
@@ -2805,7 +2804,7 @@ describe("config loading", () => {
 // 4. 清理容器
 ```
 
-#### 14.3.2 测试环境隔离模式
+#### 15.3.2 测试环境隔离模式
 
 ```bash
 # Docker 测试容器
@@ -2819,7 +2818,7 @@ docker run --rm \
 scripts/test-cleanup-docker.sh
 ```
 
-#### 14.3.3 测试覆盖率模式
+#### 15.3.3 测试覆盖率模式
 
 ```json
 {
@@ -2833,7 +2832,7 @@ scripts/test-cleanup-docker.sh
 }
 ```
 
-#### 14.3.4 实时测试模式
+#### 15.3.4 实时测试模式
 
 ```bash
 # 使用真实 API 密钥（可选）
@@ -2844,7 +2843,7 @@ pnpm test:docker:live-models
 pnpm test:docker:live-gateway
 ```
 
-### 14.4 最佳实践
+### 15.4 最佳实践
 
 1. **测试命名**：描述行为而非函数（`should retry when fails`）
 2. **隔离性**：测试间不共享状态
@@ -2854,9 +2853,9 @@ pnpm test:docker:live-gateway
 
 ---
 
-## 15. 部署与发布系统
+## 16. 部署与发布系统
 
-### 15.1 核心理念
+### 16.1 核心理念
 
 **多平台支持，自动化发布**
 
@@ -2865,7 +2864,7 @@ pnpm test:docker:live-gateway
 - 版本一致性检查
 - 回滚机制
 
-### 15.2 平台矩阵
+### 16.2 平台矩阵
 
 | 平台    | 打包方式    | 分发渠道               | 自动化程度 |
 | ------- | ----------- | ---------------------- | ---------- |
@@ -2875,9 +2874,9 @@ pnpm test:docker:live-gateway
 | CLI     | npm         | npm registry           | 完全自动化 |
 | Docker  | 多架构镜像  | Docker Hub             | 完全自动化 |
 
-### 15.3 关键模式
+### 16.3 关键模式
 
-#### 15.3.1 版本一致性模式
+#### 16.3.1 版本一致性模式
 
 ```typescript
 // scripts/release-check.ts
@@ -2893,7 +2892,7 @@ const versionLocations = {
 // 所有版本必须一致才能发布
 ```
 
-#### 15.3.2 macOS 打包模式
+#### 16.3.2 macOS 打包模式
 
 ```bash
 # scripts/package-mac-app.sh
@@ -2917,7 +2916,7 @@ xcrun notarytool submit dist/OpenClaw.zip \
 create-dmg dist/OpenClaw.app dist/
 ```
 
-#### 15.3.3 npm 发布模式
+#### 16.3.3 npm 发布模式
 
 ```bash
 # 使用 1Password 管理 OTP
@@ -2935,7 +2934,7 @@ npm view openclaw version --userconfig "$(mktemp)"
 tmux kill-session -t release
 ```
 
-#### 15.3.4 Docker 发布模式
+#### 16.3.4 Docker 发布模式
 
 ```dockerfile
 # Dockerfile
@@ -2962,7 +2961,7 @@ docker buildx build \
   --push .
 ```
 
-#### 15.3.5 发布检查清单
+#### 16.3.5 发布检查清单
 
 ```typescript
 // scripts/release-check.ts
@@ -2978,7 +2977,7 @@ const releaseChecklist = [
 ];
 ```
 
-### 15.4 最佳实践
+### 16.4 最佳实践
 
 1. **版本锁定**：使用 lockfile 确保依赖一致性
 2. **自动化测试**：发布前自动运行所有测试
@@ -2988,9 +2987,9 @@ const releaseChecklist = [
 
 ---
 
-## 16. CI/CD 与工作流
+## 17. CI/CD 与工作流
 
-### 16.1 核心理念
+### 17.1 核心理念
 
 **智能检测，并行执行**
 
@@ -2999,7 +2998,7 @@ const releaseChecklist = [
 - 缓存优化构建速度
 - 失败自动重试
 
-### 16.2 工作流架构
+### 17.2 工作流架构
 
 ```
 ┌─────────────────────────────────────┐
@@ -3025,9 +3024,9 @@ const releaseChecklist = [
 └─────────────────────────────────────┘
 ```
 
-### 16.3 关键工作流
+### 17.3 关键工作流
 
-#### 16.3.1 CI 工作流（ci.yml）
+#### 17.3.1 CI 工作流（ci.yml）
 
 ```yaml
 # 智能变更检测
@@ -3043,7 +3042,7 @@ concurrency:
   cancel-in-progress: true  # PR 更新取消旧任务
 ```
 
-#### 16.3.2 安装烟测（install-smoke.yml）
+#### 17.3.2 安装烟测（install-smoke.yml）
 
 ```yaml
 # 验证安装脚本可用性
@@ -3057,7 +3056,7 @@ concurrency:
 # 3. 上一个版本安装
 ```
 
-#### 16.3.3 Docker 发布（docker-release.yml）
+#### 17.3.3 Docker 发布（docker-release.yml）
 
 ```yaml
 # 多架构构建
@@ -3073,7 +3072,7 @@ concurrency:
     cache-to: type=gha,mode=max
 ```
 
-#### 16.3.4 自动化响应（auto-response.yml）
+#### 17.3.4 自动化响应（auto-response.yml）
 
 ```yaml
 # 自动标记 PR
@@ -3085,9 +3084,9 @@ concurrency:
   uses: ./.github/actions/auto-respond
 ```
 
-### 16.4 GitHub Actions 最佳实践
+### 17.4 GitHub Actions 最佳实践
 
-#### 16.4.1 自定义 Action 复用
+#### 17.4.1 自定义 Action 复用
 
 ```yaml
 # .github/actions/setup-pnpm-store-cache/action.yml
@@ -3112,7 +3111,7 @@ runs:
         key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 ```
 
-#### 16.4.2 并发控制
+#### 17.4.2 并发控制
 
 ```yaml
 concurrency:
@@ -3120,7 +3119,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 ```
 
-#### 16.4.3 失败重试
+#### 17.4.3 失败重试
 
 ```yaml
 - name: Flaky test retry
@@ -3131,7 +3130,7 @@ concurrency:
     command: pnpm test:live
 ```
 
-### 16.5 最佳实践
+### 17.5 最佳实践
 
 1. **快速失败**：先运行快速测试，失败立即停止
 2. **缓存策略**：缓存依赖和构建产物
@@ -3141,9 +3140,9 @@ concurrency:
 
 ---
 
-## 17. 国际化系统
+## 18. 国际化系统
 
-### 17.1 核心理念
+### 18.1 核心理念
 
 **翻译记忆，术语统一**
 
@@ -3152,7 +3151,7 @@ concurrency:
 - 自动化翻译流程
 - 人工审核关键内容
 
-### 17.2 架构层次
+### 18.2 架构层次
 
 ```
 ┌─────────────────────────────────────┐
@@ -3184,9 +3183,9 @@ concurrency:
 └─────────────────────────────────────┘
 ```
 
-### 17.3 关键模式
+### 18.3 关键模式
 
-#### 17.3.1 翻译记忆库模式
+#### 18.3.1 翻译记忆库模式
 
 ```typescript
 // docs/.i18n/zh-CN.tm.jsonl
@@ -3203,7 +3202,7 @@ function translateWithMemory(
 }
 ```
 
-#### 17.3.2 术语表模式
+#### 18.3.2 术语表模式
 
 ```json
 // docs/.i18n/glossary.zh-CN.json
@@ -3232,7 +3231,7 @@ function applyGlossary(
 }
 ```
 
-#### 17.3.3 自动化流程模式
+#### 18.3.3 自动化流程模式
 
 ```bash
 # scripts/docs-i18n
@@ -3254,7 +3253,7 @@ generate_docs docs/zh-CN/
 # 检查关键章节翻译质量
 ```
 
-### 17.4 最佳实践
+### 18.4 最佳实践
 
 1. **术语先行**：先定义术语表再翻译
 2. **记忆复用**：避免相同内容重复翻译
@@ -3264,9 +3263,9 @@ generate_docs docs/zh-CN/
 
 ---
 
-## 18. 文档系统
+## 19. 文档系统
 
-### 18.1 核心理念
+### 19.1 核心理念
 
 **文档即代码，自动化生成**
 
@@ -3275,7 +3274,7 @@ generate_docs docs/zh-CN/
 - 自动化拼写检查
 - 版本化文档
 
-### 18.2 架构层次
+### 19.2 架构层次
 
 ```
 ┌─────────────────────────────────────┐
@@ -3307,9 +3306,9 @@ generate_docs docs/zh-CN/
 └─────────────────────────────────────┘
 ```
 
-### 18.3 关键模式
+### 19.3 关键模式
 
-#### 18.3.1 文档结构模式
+#### 19.3.1 文档结构模式
 
 ```
 docs/
@@ -3336,7 +3335,7 @@ docs/
     └── faq.md
 ```
 
-#### 18.3.2 Frontmatter 模式
+#### 19.3.2 Frontmatter 模式
 
 ```markdown
 ---
@@ -3351,7 +3350,7 @@ tags:
 ---
 ```
 
-#### 18.3.3 链接规范模式
+#### 19.3.3 链接规范模式
 
 ```markdown
 <!-- 内部链接：根相对路径，无 .md 后缀 -->
@@ -3369,7 +3368,7 @@ tags:
 ✅ [Config](/gateway/configuration) <!-- 根相对路径 -->
 ```
 
-#### 18.3.4 质量检查模式
+#### 19.3.4 质量检查模式
 
 ```bash
 # 链接审计
@@ -3388,7 +3387,7 @@ pnpm lint:docs
 # 统一的文档风格
 ```
 
-#### 18.3.5 API 文档自动生成
+#### 19.3.5 API 文档自动生成
 
 ```typescript
 // 从 TypeBox Schema 生成文档
@@ -3407,7 +3406,7 @@ ${generatePropertiesTable(schema)}
 `;
 ```
 
-### 18.4 最佳实践
+### 19.4 最佳实践
 
 1. **单一来源**：文档只在一个地方定义
 2. **自动化检查**：CI 自动检查链接和拼写
@@ -3417,11 +3416,11 @@ ${generatePropertiesTable(schema)}
 
 ---
 
-## 19. 项目管理最佳实践
+## 20. 项目管理最佳实践
 
-### 19.1 代码组织
+### 20.1 代码组织
 
-#### 19.1.1 目录结构约定
+#### 20.1.1 目录结构约定
 
 ```
 openclaw/
@@ -3444,7 +3443,7 @@ openclaw/
 └── tests/               # 测试（部分与源码同目录）
 ```
 
-#### 19.1.2 文件命名规范
+#### 20.1.2 文件命名规范
 
 ```typescript
 // 测试文件：*.test.ts
@@ -3464,9 +3463,9 @@ path - utils.ts;
 string - utils.ts;
 ```
 
-### 19.2 Git 工作流
+### 20.2 Git 工作流
 
-#### 19.2.1 分支策略
+#### 20.2.1 分支策略
 
 ```
 main              # 主分支，随时可发布
@@ -3476,7 +3475,7 @@ main              # 主分支，随时可发布
 └── hotfix/*      # 紧急修复
 ```
 
-#### 19.2.2 提交信息规范
+#### 20.2.2 提交信息规范
 
 ```bash
 # Conventional Commits
@@ -3497,7 +3496,7 @@ fix(config): resolve env substitution edge case
 docs(gateway): update authentication guide
 ```
 
-#### 19.2.3 PR 流程
+#### 20.2.3 PR 流程
 
 ```
 1. 创建功能分支
@@ -3522,9 +3521,9 @@ docs(gateway): update authentication guide
    - 删除功能分支
 ```
 
-### 19.3 依赖管理
+### 20.3 依赖管理
 
-#### 19.3.1 包管理器选择
+#### 20.3.1 包管理器选择
 
 ```json
 {
@@ -3538,7 +3537,7 @@ docs(gateway): update authentication guide
 }
 ```
 
-#### 19.3.2 依赖分类
+#### 20.3.2 依赖分类
 
 ```json
 {
@@ -3563,9 +3562,9 @@ docs(gateway): update authentication guide
 }
 ```
 
-### 19.4 质量管理
+### 20.4 质量管理
 
-#### 19.4.1 代码检查清单
+#### 20.4.1 代码检查清单
 
 ```bash
 # 预检查
@@ -3583,7 +3582,7 @@ pnpm docs:check-links
 pnpm docs:spellcheck
 ```
 
-#### 19.4.2 发布检查清单
+#### 20.4.2 发布检查清单
 
 ```bash
 # 发布前检查
@@ -3598,9 +3597,9 @@ pnpm release:check
 # ✓ 性能回归检查
 ```
 
-### 19.5 团队协作
+### 20.5 团队协作
 
-#### 19.5.1 Code Review 指南
+#### 20.5.1 Code Review 指南
 
 ```markdown
 ## Reviewer 职责
@@ -3618,7 +3617,7 @@ pnpm release:check
 - 大 PR (> 500 行): 拆分或安排专门 review 时间
 ```
 
-#### 19.5.2 Issue 管理
+#### 20.5.2 Issue 管理
 
 ```markdown
 ## Issue 模板
@@ -3637,9 +3636,9 @@ pnpm release:check
 - 替代方案
 ```
 
-### 19.6 知识管理
+### 20.6 知识管理
 
-#### 19.6.1 决策记录（ADR）
+#### 20.6.1 决策记录（ADR）
 
 ```markdown
 # ADR-001: 选择 TypeBox 作为协议 Schema
@@ -3675,7 +3674,7 @@ Accepted
 - 额外的构建步骤
 ```
 
-#### 19.6.2 技能文档
+#### 20.6.2 技能文档
 
 ```markdown
 ## AGENTS.md / skills/
@@ -3688,7 +3687,7 @@ Accepted
 - 陷阱和注意事项
 ```
 
-### 19.7 最佳实践
+### 20.7 最佳实践
 
 1. **文档化一切**：决策、流程、陷阱
 2. **自动化重复工作**：构建、测试、部署
