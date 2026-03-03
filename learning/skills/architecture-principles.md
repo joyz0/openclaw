@@ -4,6 +4,34 @@
 
 ---
 
+## 文档版本历史
+
+| 版本  | 日期       | 变更内容                                                                   | 作者          |
+| ----- | ---------- | -------------------------------------------------------------------------- | ------------- |
+| 1.0.0 | 2026-03-03 | 初始版本                                                                   | OpenClaw Team |
+| 1.1.0 | 2026-03-04 | 新增错误处理系统章节、优化导航、补充检查清单                               | OpenClaw Team |
+| 1.2.0 | 2026-03-04 | 修正章节编号错误、修复 mermaid 图表、添加系统全景架构图、补充性能指标基准  | OpenClaw Team |
+| 1.3.0 | 2026-03-04 | 添加快速开始章节、错误处理流程图、安全威胁模型、数据迁移策略、文档维护指南 | OpenClaw Team |
+
+**主要变更说明**：
+
+- **v1.2.0**:
+  - 修正第 14/15/17/18 章的章节编号错误
+  - 修复网关协议 mermaid 序列图闭合问题
+  - 新增系统全景架构图（5 层架构可视化）
+  - 补充性能指标基准表
+- **v1.1.0**:
+  - 新增第 13 章：错误处理系统（错误分类、错误码设计、处理策略）
+  - 添加快速导航矩阵（按角色分类）
+  - 补充新开发者入职检查清单和代码审查检查清单
+  - 更新 FAQ 添加错误处理相关问题
+  - 调整章节编号（原 13-18 章 → 14-19 章）
+- **v1.0.0**:
+  - 初始版本，涵盖 18 个架构主题
+  - 包含技术架构和项目管理两大篇章
+
+---
+
 ## 目录
 
 ### 技术架构篇
@@ -17,18 +45,21 @@
 7. [类型安全与 Schema 驱动](#7-类型安全与-schema-驱动)
 8. [日志与可观测性](#8-日志与可观测性)
 9. [安全与认证](#9-安全与认证)
+   - [9.4 安全威胁模型](#94-安全威胁模型)
 10. [模块边界与依赖注入](#10-模块边界与依赖注入)
 11. [媒体处理架构](#11-媒体处理架构)
 12. [内存管理系统](#12-内存管理系统)
+13. [错误处理系统](#13-错误处理系统)
+    - [13.5 数据迁移策略](#135-数据迁移策略)
 
 ### 项目管理篇
 
-13. [测试系统架构](#13-测试系统架构)
-14. [部署与发布系统](#14-部署与发布系统)
-15. [CI/CD 与工作流](#15-cicd-与工作流)
-16. [国际化系统](#16-国际化系统)
-17. [文档系统](#17-文档系统)
-18. [项目管理最佳实践](#18-项目管理最佳实践)
+14. [测试系统架构](#14-测试系统架构)
+15. [部署与发布系统](#15-部署与发布系统)
+16. [CI/CD 与工作流](#16-cicd-与工作流)
+17. [国际化系统](#17-国际化系统)
+18. [文档系统](#18-文档系统)
+19. [项目管理最佳实践](#19-项目管理最佳实践)
 
 ---
 
@@ -59,6 +90,132 @@
 - [添加新插件](#c1-添加新插件检查清单)
 - [发布前检查](#c2-发布前检查清单)
 - [故障排查](#c3-故障排查检查清单)
+
+---
+
+### 快速导航（按角色）
+
+| 角色       | 优先阅读章节                                                                                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 新开发者   | [2](#2-cli-系统架构), [10](#10-模块边界与依赖注入), [13](#13-测试系统架构), [18](#18-项目管理最佳实践)                                                                        |
+| 插件开发者 | [3](#3-插件化架构), [7](#7-类型安全与-schema-驱动), [10](#10-模块边界与依赖注入), [C.1](#c1-添加新插件检查清单)                                                               |
+| 运维人员   | [1](#1-配置系统设计), [4](#4-网关通信协议), [8](#8-日志与可观测性), [14](#14-部署与发布系统), [B.2-B.4](#b2-开发实践)                                                         |
+| 架构师     | [1](#1-配置系统设计), [4](#4-网关通信协议), [7](#7-类型安全与-schema-驱动), [10](#10-模块边界与依赖注入), [11](#11-媒体处理架构), [12](#12-内存管理系统), [B.1](#b1-架构设计) |
+| 测试工程师 | [6](#6-重试与容错), [13](#13-测试系统架构), [15](#15-cicd-与工作流), [C.2-C.3](#c2-发布前检查清单)                                                                            |
+
+---
+
+## 快速开始
+
+### 预计阅读时间
+
+- **快速浏览**：30 分钟（只看标题、图表和关键概念）
+- **完整阅读**：3-4 小时（包含代码示例和最佳实践）
+- **深度学习**：1-2 天（实践所有检查清单和示例）
+
+### 5 分钟速览
+
+如果你只有 5 分钟，优先阅读：
+
+1. [系统全景架构](#系统全景架构) - 了解整体架构
+2. [1. 配置系统设计](#1-配置系统设计) - 核心基础
+3. [7. 类型安全与 Schema 驱动](#7-类型安全与-schema-驱动) - 关键理念
+
+### 按场景阅读
+
+| 场景         | 优先阅读章节                                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 添加新功能   | [3. 插件化架构](#3-插件化架构), [7. 类型安全与 Schema 驱动](#7-类型安全与-schema-驱动), [10. 模块边界与依赖注入](#10-模块边界与依赖注入) |
+| 排查问题     | [13. 错误处理系统](#13-错误处理系统), [附录 C.3](#c3-故障排查检查清单)                                                                   |
+| 发布部署     | [15. 部署与发布系统](#15-部署与发布系统), [16. CI/CD 与工作流](#16-cicd-与工作流), [附录 C.2](#c2-发布前检查清单)                        |
+| 性能优化     | [6. 重试与容错](#6-重试与容错), [12. 内存管理系统](#12-内存管理系统), [B.3 性能优化](#b3-性能优化)                                       |
+| 安全加固     | [9. 安全与认证](#9-安全与认证), [附录 C.2](#c2-发布前检查清单)                                                                           |
+| 新开发者入职 | [2. CLI 系统架构](#2-cli-系统架构), [10. 模块边界与依赖注入](#10-模块边界与依赖注入), [附录 C.4](#c4-新开发者入职检查清单)               |
+
+### 关键概念速查
+
+> **关键概念**：Schema 驱动开发（SDD）
+>
+> 从 Schema 定义出发，自动生成类型、验证、文档，保证单一来源真实性。使用 TypeBox 定义协议，Zod 验证配置，TypeScript 提供编译时类型。
+
+> **关键概念**：零信任安全
+>
+> 所有连接需要认证，设备配对机制，本地信任自动批准，远程连接显式授权。默认使用 pairing 策略，禁止未授权访问。
+
+> **关键概念**：插件隔离
+>
+> 插件与核心代码完全隔离，通过 SDK 提供编译时类型，通过 Runtime 提供运行时能力。禁止插件直接导入核心模块，确保稳定性和安全性。
+
+> ⚠️ **反模式警告**：避免在插件中直接导入 `src/*` 模块，这会破坏插件隔离性。始终使用注入的 Runtime API。
+
+> ⚠️ **反模式警告**：避免 Schema 和类型分离（容易导致不一致）。应从 Schema 推导类型：`type MyType = z.infer<typeof schema>`。
+
+---
+
+## 系统全景架构
+
+```mermaid
+graph TB
+    subgraph Client["客户端层"]
+        C1[macOS App]
+        C2[iOS App]
+        C3[Android App]
+        C4[CLI]
+        C5[Web UI]
+    end
+
+    subgraph Gateway["网关层"]
+        G1[WebSocket 服务]
+        G2[协议验证]
+        G3[路由分发]
+        G4[事件广播]
+    end
+
+    subgraph Core["核心层"]
+        K1[配置系统]
+        K2[会话管理]
+        K3[插件系统]
+        K4[媒体处理]
+        K5[内存管理]
+    end
+
+    subgraph Channel["通道层"]
+        CH1[WhatsApp]
+        CH2[Telegram]
+        CH3[Discord]
+        CH4[插件通道]
+    end
+
+    subgraph AI["AI 服务层"]
+        A1[模型路由]
+        A2[记忆检索]
+        A3[工具调用]
+        A4[嵌入生成]
+    end
+
+    Client -->|WebSocket| Gateway
+    Gateway --> Core
+    Core --> Channel
+    Core --> AI
+    Channel -->|消息 | Gateway
+    AI -->|响应 | Core
+
+    style Client fill:#e1f5ff
+    style Gateway fill:#fff3cd
+    style Core fill:#d4edda
+    style Channel fill:#f8d7da
+    style AI fill:#e2d5f1
+```
+
+**架构层次说明**：
+
+| 层次          | 职责               | 关键组件                              |
+| ------------- | ------------------ | ------------------------------------- |
+| **客户端层**  | 用户交互界面       | macOS/iOS/Android App、CLI、Web UI    |
+| **网关层**    | 连接管理与协议转换 | WebSocket 服务、认证、路由、事件广播  |
+| **核心层**    | 核心业务逻辑       | 配置、会话、插件、媒体、内存          |
+| **通道层**    | 消息通道适配       | WhatsApp、Telegram、Discord、插件通道 |
+| **AI 服务层** | AI 能力集成        | 模型路由、记忆检索、工具调用          |
 
 ---
 
@@ -558,6 +715,8 @@ sequenceDiagram
 
     Client->>Gateway: send message
     Gateway-->>Client: ack
+end
+```
 
 ### 4.3 关键模式
 
@@ -1275,6 +1434,135 @@ type DMPolicy =
 4. **令牌过期**：设备令牌设置过期时间
 5. **审计日志**：记录所有配对和认证事件
 
+### 9.4 安全威胁模型
+
+#### 9.4.1 威胁分类
+
+| 威胁       | 影响 | 可能性 | 缓解措施                                   |
+| ---------- | ---- | ------ | ------------------------------------------ |
+| 中间人攻击 | 高   | 中     | TLS 加密、证书验证、公钥固定               |
+| 重放攻击   | 中   | 中     | 时间戳验证、nonce 机制、签名过期           |
+| DDoS 攻击  | 高   | 低     | 速率限制、连接数限制、IP 封禁              |
+| 配置泄露   | 高   | 低     | 文件权限（600）、Secret 加密存储、环境变量 |
+| 未授权访问 | 高   | 中     | 设备配对、访问控制列表、JWT 令牌验证       |
+| 会话劫持   | 高   | 低     | 会话加密、定期轮换会话 ID、IP 绑定         |
+| 插件漏洞   | 中   | 中     | 插件隔离、最小权限、API 审计               |
+| 凭据窃取   | 高   | 低     | 1Password 集成、密钥轮换、最小权限         |
+
+#### 9.4.2 安全审计清单
+
+**配置安全**：
+
+- [ ] 所有 API 密钥是否使用 Secret 管理（env/file/exec）
+- [ ] 配置文件权限是否为 600（`chmod 600 ~/.openclaw/config.json5`）
+- [ ] 敏感日志是否脱敏（API 密钥、令牌、密码）
+- [ ] 是否启用配置备份轮转
+- [ ] 是否禁用远程调试端口
+
+**连接安全**：
+
+- [ ] WebSocket 是否使用 TLS（wss://）
+- [ ] 配对流程是否防重放攻击（时间戳 + nonce）
+- [ ] 是否启用连接速率限制
+- [ ] 是否限制最大并发连接数
+- [ ] 是否记录所有认证事件
+
+**插件安全**：
+
+- [ ] 插件是否无法访问核心模块（`src/*`）
+- [ ] 插件 API 是否最小权限
+- [ ] 是否验证插件 Manifest 签名
+- [ ] 是否限制插件资源使用（CPU、内存）
+- [ ] 是否审计插件网络请求
+
+**运维安全**：
+
+- [ ] 是否定期轮换密钥和令牌
+- [ ] 是否启用安全日志告警
+- [ ] 是否定期更新依赖（修复漏洞）
+- [ ] 是否禁用不必要的通道和功能
+- [ ] 是否定期备份配置和会话数据
+
+#### 9.4.3 安全响应流程
+
+```mermaid
+flowchart TD
+    A[发现安全漏洞] --> B{严重程度？}
+    B -->|严重 | C[立即吊销凭据]
+    B -->|中等 | D[监控异常行为]
+    B -->|低 | E[记录并跟踪]
+
+    C --> F[通知用户]
+    D --> F
+    E --> F
+
+    F --> G[发布安全补丁]
+    G --> H[更新依赖]
+    H --> I[验证修复]
+    I --> J[发布安全公告]
+
+    style C fill:#f8d7da
+    style G fill:#fff3cd
+    style J fill:#d4edda
+```
+
+#### 9.4.4 安全事件响应
+
+**1. 凭据泄露**：
+
+```bash
+# 立即吊销泄露的凭据
+openclaw credentials revoke --type api-key --id <key-id>
+
+# 生成新凭据
+openclaw credentials generate --type api-key
+
+# 更新配置
+openclaw config set agents.defaults.model.apiKey <new-key>
+
+# 重启网关
+openclaw gateway restart
+```
+
+**2. 未授权访问**：
+
+```bash
+# 查看所有已配对设备
+openclaw pairing list
+
+# 吊销可疑设备
+openclaw pairing revoke --device <device-id>
+
+# 查看认证日志
+openclaw logs --grep "auth" --since "1h"
+
+# 启用更强的访问控制
+openclaw config set channels.whatsapp.dmPolicy allowlist
+```
+
+**3. DDoS 攻击**：
+
+```bash
+# 限制连接速率
+openclaw config set gateway.rateLimit.maxRequests 100
+openclaw config set gateway.rateLimit.windowMs 60000
+
+# 限制并发连接
+openclaw config set gateway.maxConnections 50
+
+# 封禁可疑 IP
+openclaw config set gateway.blocklist ["192.168.1.100"]
+```
+
+#### 9.4.5 安全最佳实践
+
+1. **纵深防御**：多层安全措施，不依赖单一防护
+2. **最小权限**：只授予必要的权限，定期审查
+3. **默认安全**：默认配置应该是安全的
+4. **安全审计**：定期审计代码、配置和日志
+5. **快速响应**：发现漏洞立即响应和修复
+6. **透明沟通**：及时发布安全公告和修复建议
+
 ---
 
 ## 10. 模块边界与依赖注入
@@ -1308,15 +1596,47 @@ class AgentService {
   async run(message: string): Promise<string> {
     this.deps.logger.info("Running agent", { message });
 
-    const config = this.deps.config.agents.defaults;
-    const response = await this.deps.httpClient.post("/agent", {
-      message,
-      model: config.model.primary,
-    });
+    try {
+      const config = this.deps.config.agents.defaults;
 
-    await this.deps.db.save({ message, response });
+      const response = await this.deps.httpClient.post("/agent", {
+        message,
+        model: config.model.primary,
+        timeoutMs: 30000,
+      });
 
-    return response;
+      await this.deps.db.save({ message, response });
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof TimeoutError) {
+        this.deps.logger.error("Agent request timed out", {
+          timeoutMs: 30000,
+          message,
+        });
+        throw new ClawError(
+          ErrorCodes.AGENT_TIMEOUT,
+          "AI 代理响应超时",
+          { timeoutMs: 30000, message },
+          error
+        );
+      }
+
+      if (error instanceof NetworkError) {
+        this.deps.logger.error("Network error during agent request", {
+          errorCode: error.code,
+        });
+        throw new ClawError(
+          ErrorCodes.NETWORK_FAILED,
+          "网络连接失败",
+          { errorCode: error.code },
+          error
+        );
+      }
+
+      // 未知错误向上传播
+      throw error;
+    }
   }
 }
 
@@ -1384,8 +1704,6 @@ import { InternalHelper } from "./internal-helper.js";
 3. **工厂函数**：提供默认依赖工厂便于测试
 4. **边界检查**：CI 检查模块边界违规
 5. **循环依赖检测**：使用工具检测循环依赖
-
----
 
 ---
 
@@ -1655,9 +1973,777 @@ function maximalMarginalRelevance(
 
 ---
 
-## 13. 测试系统架构
+## 13. 错误处理系统
 
 ### 13.1 核心理念
+
+**失败可预期，处理要优雅**
+
+- 区分可恢复与不可恢复错误
+- 统一的错误码体系
+- 错误上下文完整保留
+- 用户友好的错误消息
+
+### 13.2 错误分类
+
+#### 13.2.1 错误处理流程
+
+```mermaid
+flowchart TD
+    A[错误发生] --> B{错误分类}
+    B -->|可恢复 | C[重试策略]
+    B -->|不可恢复 | D[用户干预]
+    B -->|可降级 | E[降级处理]
+
+    C --> F{重试成功？}
+    F -->|是 | G[恢复正常]
+    F -->|否 | D
+
+    E --> H[降级功能]
+    H --> I[记录日志]
+    I --> J[继续运行]
+
+    D --> K[抛出错误]
+    K --> L[通知用户]
+
+    style B fill:#fff3cd
+    style C fill:#d4edda
+    style D fill:#f8d7da
+    style E fill:#e1f5ff
+    style G fill:#d4edda
+    style J fill:#d4edda
+    style L fill:#f8d7da
+```
+
+#### 13.2.2 按可恢复性分类
+
+```typescript
+enum ErrorRecoverability {
+  /** 可重试，临时性故障 */
+  RECOVERABLE = "recoverable",
+
+  /** 不可重试，需要用户干预 */
+  FATAL = "fatal",
+
+  /** 需要降级处理 */
+  DEGRADABLE = "degradable",
+}
+
+// 示例
+const errors = {
+  // 可恢复：网络超时、速率限制、服务暂时不可用
+  NETWORK_TIMEOUT: { recoverability: "recoverable", retryable: true },
+  RATE_LIMITED: {
+    recoverability: "recoverable",
+    retryable: true,
+    retryAfter: true,
+  },
+
+  // 不可恢复：配置错误、认证失败、资源不存在
+  INVALID_CONFIG: { recoverability: "fatal", retryable: false },
+  AUTH_FAILED: { recoverability: "fatal", retryable: false },
+  RESOURCE_NOT_FOUND: { recoverability: "fatal", retryable: false },
+
+  // 可降级：非核心功能失败
+  EMBEDDING_FAILED: { recoverability: "degradable", fallback: "skip_memory" },
+  MEDIA_PROCESSING_FAILED: {
+    recoverability: "degradable",
+    fallback: "text_only",
+  },
+};
+```
+
+#### 13.2.3 按来源分类
+
+```typescript
+enum ErrorSource {
+  CONFIG = "config", // 配置错误
+  NETWORK = "network", // 网络错误
+  CHANNEL = "channel", // 通道错误
+  GATEWAY = "gateway", // 网关错误
+  AGENT = "agent", // AI 代理错误
+  MEDIA = "media", // 媒体处理错误
+  MEMORY = "memory", // 内存存储错误
+  PLUGIN = "plugin", // 插件错误
+}
+```
+
+### 13.3 错误码设计
+
+#### 13.3.1 错误码结构
+
+```typescript
+interface ErrorCode {
+  /** 错误域（2 位字母） */
+  domain: string; // CG=Config, GW=Gateway, CH=Channel, AG=Agent
+
+  /** 错误类型（2 位数字） */
+  category: number; // 01=验证，02=认证，03=授权，04=资源，05=网络
+
+  /** 具体错误（3 位数字） */
+  code: number;
+}
+
+// 示例：CG01001 = Config 验证错误 #001
+const ErrorCodes = {
+  // 配置错误 (CG)
+  CONFIG_INVALID_JSON: "CG01001",
+  CONFIG_MISSING_FIELD: "CG01002",
+  CONFIG_INVALID_VALUE: "CG01003",
+
+  // 网关错误 (GW)
+  GATEWAY_CONNECTION_FAILED: "GW04001",
+  GATEWAY_AUTH_FAILED: "GW02001",
+  GATEWAY_RATE_LIMITED: "GW05001",
+
+  // 通道错误 (CH)
+  CHANNEL_NOT_ENABLED: "CH04001",
+  CHANNEL_SEND_FAILED: "CH05001",
+  CHANNEL_MESSAGE_INVALID: "CH01001",
+
+  // AI 代理错误 (AG)
+  AGENT_MODEL_NOT_FOUND: "AG04001",
+  AGENT_CONTEXT_TOO_LONG: "AG01001",
+  AGENT_RATE_LIMITED: "AG05001",
+} as const;
+```
+
+#### 13.3.2 错误对象结构
+
+```typescript
+interface ClawError {
+  /** 错误码 */
+  code: string;
+
+  /** 简短描述 */
+  message: string;
+
+  /** 详细上下文 */
+  context: {
+    [key: string]: any;
+    timestamp: string;
+    requestId?: string;
+    sessionId?: string;
+  };
+
+  /** 根本原因（如果是包装错误） */
+  cause?: Error;
+
+  /** 修复建议 */
+  suggestions: string[];
+
+  /** 是否可重试 */
+  retryable: boolean;
+
+  /** 建议的重试延迟（毫秒） */
+  retryAfterMs?: number;
+}
+
+// 示例
+const error: ClawError = {
+  code: ErrorCodes.GATEWAY_AUTH_FAILED,
+  message: "网关认证失败：设备未配对",
+  context: {
+    timestamp: new Date().toISOString(),
+    requestId: "req_123",
+    deviceId: "dev_456",
+    pairingCode: "789012",
+  },
+  suggestions: [
+    "在网关设备上查看配对码",
+    "在客户端输入配对码完成配对",
+    "运行 `openclaw pairing generate` 生成新配对码",
+  ],
+  retryable: false,
+};
+```
+
+### 13.4 错误包装与传播
+
+#### 13.4.1 错误包装模式
+
+```typescript
+class ClawErrorBase extends Error {
+  constructor(
+    public code: string,
+    message: string,
+    public context: Record<string, any>,
+    public cause?: Error
+  ) {
+    super(message);
+    this.name = "ClawError";
+  }
+
+  toJSON(): ClawError {
+    return {
+      code: this.code,
+      message: this.message,
+      context: this.context,
+      cause: this.cause,
+      suggestions: this.getSuggestions(),
+      retryable: this.isRetryable(),
+    };
+  }
+
+  protected getSuggestions(): string[] {
+    // 根据错误码返回建议
+    return SUGGESTIONS[this.code] || [];
+  }
+
+  protected isRetryable(): boolean {
+    return RETRYABLE_CODES.includes(this.code);
+  }
+}
+
+// 使用示例
+async function loadConfig(path: string) {
+  try {
+    return await parseConfigFile(path);
+  } catch (cause) {
+    if (cause instanceof NotFoundError) {
+      throw new ClawErrorBase(
+        ErrorCodes.CONFIG_MISSING_FILE,
+        `配置文件不存在：${path}`,
+        { path },
+        cause
+      );
+    }
+
+    if (cause instanceof SyntaxError) {
+      throw new ClawErrorBase(
+        ErrorCodes.CONFIG_INVALID_JSON,
+        `配置文件语法错误`,
+        { path, line: cause.line },
+        cause
+      );
+    }
+
+    throw cause; // 未知错误向上传播
+  }
+}
+```
+
+#### 13.4.2 错误传播链
+
+```
+用户操作
+    ↓
+CLI 命令
+    ↓
+业务逻辑层
+    ↓
+基础设施层
+    ↓
+外部服务（AI API、数据库等）
+
+错误向上传播时：
+1. 底层添加上下文（文件路径、请求 ID 等）
+2. 中层判断是否可恢复
+3. 顶层生成用户友好的消息
+```
+
+### 13.5 错误处理策略
+
+#### 13.5.1 重试策略
+
+```typescript
+async function executeWithRetry<T>(
+  operation: () => Promise<T>,
+  options: {
+    maxAttempts: number;
+    errors: string[]; // 可重试的错误码
+    backoff: "exponential" | "linear" | "fixed";
+  }
+): Promise<T> {
+  let lastError: ClawError;
+
+  for (let attempt = 1; attempt <= options.maxAttempts; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+
+      // 检查是否可重试
+      if (!options.errors.includes(error.code)) {
+        throw error; // 不可重试的错误
+      }
+
+      if (attempt === options.maxAttempts) {
+        throw error; // 达到最大尝试次数
+      }
+
+      // 计算延迟
+      const delay = calculateBackoff(attempt, options.backoff);
+      await sleep(delay);
+    }
+  }
+
+  throw lastError!;
+}
+```
+
+#### 13.5.2 降级策略
+
+```typescript
+async function sendMessageWithFallback(
+  message: Message,
+  options: {
+    useMemory: boolean;
+    includeMedia: boolean;
+  }
+): Promise<SendResult> {
+  try {
+    return await sendWithFullFeatures(message, options);
+  } catch (error) {
+    if (error.code === ErrorCodes.EMBEDDING_FAILED && options.useMemory) {
+      // 降级：不使用记忆发送
+      logger.warn("嵌入生成失败，降级为无记忆模式");
+      return await sendWithoutMemory(message);
+    }
+
+    if (
+      error.code === ErrorCodes.MEDIA_PROCESSING_FAILED &&
+      options.includeMedia
+    ) {
+      // 降级：只发送文本
+      logger.warn("媒体处理失败，降级为纯文本");
+      return await sendTextOnly(message.text);
+    }
+
+    throw error; // 无法降级
+  }
+}
+```
+
+#### 13.5.3 补偿事务
+
+```typescript
+interface CompensationStep {
+  name: string;
+  compensate: () => Promise<void>;
+}
+
+async function executeWithCompensation(
+  steps: Array<() => Promise<void>>,
+  compensations: CompensationStep[]
+) {
+  const completedSteps: number[] = [];
+
+  try {
+    for (let i = 0; i < steps.length; i++) {
+      await steps[i]();
+      completedSteps.push(i);
+    }
+  } catch (error) {
+    // 执行补偿（反向执行）
+    for (let i = completedSteps.length - 1; i >= 0; i--) {
+      const stepIndex = completedSteps[i];
+      const compensation = compensations[stepIndex];
+
+      try {
+        await compensation.compensate();
+      } catch (compError) {
+        logger.error(`补偿失败：${compensation.name}`, compError);
+        // 补偿失败也要记录，但继续执行其他补偿
+      }
+    }
+
+    throw error;
+  }
+}
+
+// 示例：发送消息并记录日志
+await executeWithCompensation(
+  [
+    () => saveMessageToSession(message),
+    () => sendToGateway(message),
+    () => markMessageAsSent(message),
+  ],
+  [
+    { name: "删除会话消息", compensate: () => deleteFromSession(message.id) },
+    {
+      name: "发送失败通知",
+      compensate: () => sendFailureNotification(message),
+    },
+    { name: "无补偿", compensate: () => Promise.resolve() },
+  ]
+);
+```
+
+### 13.6 错误日志与监控
+
+#### 13.6.1 结构化错误日志
+
+```typescript
+interface ErrorLog {
+  timestamp: string;
+  level: "error" | "warn";
+  code: string;
+  message: string;
+  subsystem: string;
+  context: {
+    requestId: string;
+    sessionId?: string;
+    userId?: string;
+    [key: string]: any;
+  };
+  stack?: string;
+  cause?: {
+    code: string;
+    message: string;
+  };
+}
+
+// 日志输出
+logger.error("消息发送失败", {
+  code: error.code,
+  channel: "whatsapp",
+  recipient: message.to,
+  retryable: error.retryable,
+  attempt: error.context.attempt,
+});
+```
+
+#### 13.6.2 错误指标收集
+
+```typescript
+interface ErrorMetrics {
+  /** 按错误码统计 */
+  byCode: Map<string, number>;
+
+  /** 按子系统统计 */
+  bySubsystem: Map<string, number>;
+
+  /** 按时间窗口统计（用于检测突增） */
+  timeWindows: Array<{
+    window: string; // ISO 时间窗口
+    count: number;
+  }>;
+
+  /** 错误恢复率 */
+  recoveryRate: number;
+}
+
+// 告警：错误率突增
+if (errorRate > threshold) {
+  alert("错误率异常", {
+    current: errorRate,
+    threshold,
+    topErrors: getTopErrorCodes(),
+  });
+}
+```
+
+### 13.7 用户友好错误消息
+
+#### 13.7.1 错误消息模板
+
+```typescript
+const ERROR_TEMPLATES = {
+  [ErrorCodes.CONFIG_INVALID_JSON]: {
+    title: "配置文件格式错误",
+    message: "配置文件 {{path}} 包含语法错误",
+    suggestions: [
+      "检查 JSON5 格式是否正确",
+      "确保注释使用 // 或 /* */",
+      "运行 `openclaw config validate` 验证配置",
+    ],
+  },
+
+  [ErrorCodes.GATEWAY_AUTH_FAILED]: {
+    title: "网关认证失败",
+    message: "设备 {{deviceId}} 未在网关上配对",
+    suggestions: [
+      "在网关设备上运行 `openclaw pairing generate`",
+      "在客户端输入配对码 {{pairingCode}}",
+      "检查网络连接是否正常",
+    ],
+  },
+};
+
+function formatErrorMessage(error: ClawError): string {
+  const template = ERROR_TEMPLATES[error.code];
+
+  if (!template) {
+    return error.message;
+  }
+
+  // 替换模板变量
+  return template.message.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+    return error.context[key] || key;
+  });
+}
+```
+
+#### 13.7.2 错误消息分层
+
+```typescript
+// 1. 开发者消息（包含完整堆栈和上下文）
+{
+  code: 'GW02001',
+  message: '网关认证失败：设备未配对',
+  stack: 'Error: ...\n  at ...',
+  context: { deviceId: 'dev_123', ... }
+}
+
+// 2. 运维消息（包含修复建议）
+{
+  code: 'GW02001',
+  message: '网关认证失败',
+  suggestions: ['运行 `openclaw pairing generate`'],
+}
+
+// 3. 用户消息（简洁友好）
+{
+  title: '设备未连接',
+  message: '请在网关设备上输入配对码：789012',
+}
+```
+
+### 13.8 最佳实践
+
+1. **尽早抛出**：发现错误立即抛出，不要掩盖
+2. **保留上下文**：错误对象包含完整的诊断信息
+3. **包装不掩盖**：包装错误时保留原始错误（cause）
+4. **统一错误码**：使用统一的错误码体系便于追踪
+5. **提供建议**：每个错误都提供修复建议
+6. **区分受众**：开发者/运维/用户的错误消息分层
+7. **监控告警**：对错误率突增设置告警
+8. **文档化错误**：在文档中记录常见错误及解决方案
+
+### 13.9 相关章节
+
+- [6. 重试与容错](#6-重试与容错) - 重试策略详解
+- [8. 日志与可观测性](#8-日志与可观测性) - 错误日志格式
+- [B.3 故障排查](#b3-故障排查) - 常见错误处理
+- [C.3 故障排查检查清单](#c3-故障排查检查清单) - 错误诊断步骤
+
+---
+
+## 13.5 数据迁移策略
+
+### 13.5.1 核心理念
+
+**向后兼容，渐进迁移**
+
+- Schema 版本化管理
+- 数据迁移自动化
+- 保持向后兼容
+- 支持回滚机制
+
+### 13.5.2 Schema 版本化
+
+```typescript
+// 配置 Schema 包含版本号
+interface ConfigSchema {
+  version: number; // Schema 版本号
+  data: {
+    // 实际配置数据
+  };
+}
+
+// 版本映射表
+const MIGRATION_MAP = {
+  1: migrateV1ToV2,
+  2: migrateV2ToV3,
+  3: migrateV3ToV4,
+};
+
+// 自动迁移函数
+async function migrateConfig(
+  config: unknown,
+  currentVersion: number,
+  targetVersion: number
+): Promise<unknown> {
+  let migrated = config;
+
+  for (let v = currentVersion; v < targetVersion; v++) {
+    const migrateFn = MIGRATION_MAP[v];
+    if (!migrateFn) {
+      throw new Error(`No migration path from v${v} to v${targetVersion}`);
+    }
+    migrated = await migrateFn(migrated);
+  }
+
+  return migrated;
+}
+```
+
+### 13.5.3 迁移策略模式
+
+```typescript
+// 策略 1：启动时自动迁移
+async function loadConfigWithMigration(path: string): Promise<Config> {
+  const rawConfig = await readConfigFile(path);
+  const version = rawConfig.version || 1;
+  const latestVersion = getLatestSchemaVersion();
+
+  if (version < latestVersion) {
+    logger.info("Migrating config", { from: version, to: latestVersion });
+    const migrated = await migrateConfig(rawConfig, version, latestVersion);
+    await backupAndWriteConfig(path, migrated);
+    return migrated;
+  }
+
+  return rawConfig;
+}
+
+// 策略 2：双写兼容（读写新旧格式）
+function readWithFallback(data: unknown): Config {
+  // 尝试新格式
+  if (isNewFormat(data)) {
+    return parseNewFormat(data);
+  }
+
+  // 回退到旧格式
+  if (isOldFormat(data)) {
+    logger.warn("Legacy format detected, auto-migrating");
+    return migrateOldToNew(data);
+  }
+
+  throw new Error("Invalid config format");
+}
+
+// 策略 3：渐进式迁移（分批处理大数据）
+async function migrateSessionsGradually(
+  sessions: Session[],
+  batchSize: number = 100
+): Promise<void> {
+  for (let i = 0; i < sessions.length; i += batchSize) {
+    const batch = sessions.slice(i, i + batchSize);
+    await Promise.all(batch.map(migrateSession));
+
+    // 每批处理后保存进度
+    await saveMigrationProgress(i + batch.length);
+  }
+}
+```
+
+### 13.5.4 向后兼容规则
+
+```typescript
+// ✅ 兼容的变更
+const compatibleChanges = [
+  "添加可选字段（带默认值）",
+  "添加新枚举值",
+  "扩展联合类型（Union）",
+  "字段重命名但保留旧字段（别名）",
+];
+
+// ❌ 不兼容的变更
+const breakingChanges = [
+  "删除必填字段",
+  "修改字段类型",
+  "修改字段语义",
+  "删除枚举值",
+];
+
+// 处理不兼容变更的示例
+interface ConfigV2 {
+  // 旧字段保留为别名
+  /** @deprecated Use `gateway.port` instead */
+  port?: number;
+
+  // 新结构
+  gateway: {
+    port: number;
+    host: string;
+  };
+}
+
+function migrateV1ToV2(config: ConfigV1): ConfigV2 {
+  return {
+    version: 2,
+    gateway: {
+      port: config.port ?? 18789, // 迁移旧字段
+      host: "127.0.0.1",
+    },
+    // 保留旧字段以便回滚
+    port: config.port,
+  };
+}
+```
+
+### 13.5.5 迁移测试
+
+```typescript
+describe("Config Migration", () => {
+  it("should migrate v1 to v2", async () => {
+    const v1Config = {
+      version: 1,
+      port: 18789,
+      token: "secret",
+    };
+
+    const v2Config = await migrateV1ToV2(v1Config);
+
+    expect(v2Config.version).toBe(2);
+    expect(v2Config.gateway.port).toBe(18789);
+    expect(v2Config.gateway.host).toBe("127.0.0.1");
+  });
+
+  it("should handle migration failures gracefully", async () => {
+    const invalidConfig = { version: 1, invalid: true };
+
+    await expect(migrateV1ToV2(invalidConfig)).rejects.toThrow();
+  });
+
+  it("should preserve data integrity after migration", () => {
+    // 验证迁移后数据完整性
+  });
+});
+```
+
+### 13.5.6 回滚机制
+
+```typescript
+// 迁移前备份
+async function backupAndMigrate(
+  configPath: string,
+  migrateFn: (config: unknown) => Promise<unknown>
+): Promise<void> {
+  const backupPath = `${configPath}.backup.${Date.now()}`;
+
+  try {
+    // 1. 备份旧配置
+    await fs.copyFile(configPath, backupPath);
+
+    // 2. 执行迁移
+    const config = await readConfigFile(configPath);
+    const migrated = await migrateFn(config);
+
+    // 3. 写入新配置
+    await writeConfigFile(configPath, migrated);
+
+    logger.info("Migration successful", { backup: backupPath });
+  } catch (error) {
+    logger.error("Migration failed, rolling back", { backup: backupPath });
+
+    // 4. 失败时回滚
+    await fs.copyFile(backupPath, configPath);
+    throw error;
+  }
+}
+
+// 手动回滚命令
+// openclaw config rollback --to-version 2
+```
+
+### 13.5.7 最佳实践
+
+1. **版本化一切**：Schema、配置、数据格式都包含版本号
+2. **自动化迁移**：启动时自动检测并迁移旧版本
+3. **保持兼容**：尽量添加字段而非删除/修改字段
+4. **备份优先**：迁移前必须备份，支持一键回滚
+5. **测试覆盖**：为每个迁移路径编写测试用例
+6. **文档化变更**：在 CHANGELOG 中记录 Schema 变更
+7. **渐进式迁移**：大数据量时分批处理，避免长时间阻塞
+
+---
+
+## 14. 测试系统架构
+
+### 14.1 核心理念
 
 **分层测试，自动化优先**
 
@@ -1666,7 +2752,7 @@ function maximalMarginalRelevance(
 - E2E 测试模拟真实场景
 - Docker 隔离测试环境
 
-### 13.2 测试金字塔
+### 14.2 测试金字塔
 
 ```
            ╱╲
@@ -1683,9 +2769,9 @@ function maximalMarginalRelevance(
                        ╲- Mock 外部依赖
 ```
 
-### 13.3 关键模式
+### 14.3 关键模式
 
-#### 13.3.1 测试分类模式
+#### 14.3.1 测试分类模式
 
 ```typescript
 // 单元测试（快速，隔离）
@@ -1719,7 +2805,7 @@ describe("config loading", () => {
 // 4. 清理容器
 ```
 
-#### 13.3.2 测试环境隔离模式
+#### 14.3.2 测试环境隔离模式
 
 ```bash
 # Docker 测试容器
@@ -1733,7 +2819,7 @@ docker run --rm \
 scripts/test-cleanup-docker.sh
 ```
 
-#### 13.3.3 测试覆盖率模式
+#### 14.3.3 测试覆盖率模式
 
 ```json
 {
@@ -1747,7 +2833,7 @@ scripts/test-cleanup-docker.sh
 }
 ```
 
-#### 13.3.4 实时测试模式
+#### 14.3.4 实时测试模式
 
 ```bash
 # 使用真实 API 密钥（可选）
@@ -1758,7 +2844,7 @@ pnpm test:docker:live-models
 pnpm test:docker:live-gateway
 ```
 
-### 13.4 最佳实践
+### 14.4 最佳实践
 
 1. **测试命名**：描述行为而非函数（`should retry when fails`）
 2. **隔离性**：测试间不共享状态
@@ -1768,9 +2854,9 @@ pnpm test:docker:live-gateway
 
 ---
 
-## 14. 部署与发布系统
+## 15. 部署与发布系统
 
-### 14.1 核心理念
+### 15.1 核心理念
 
 **多平台支持，自动化发布**
 
@@ -1779,7 +2865,7 @@ pnpm test:docker:live-gateway
 - 版本一致性检查
 - 回滚机制
 
-### 14.2 平台矩阵
+### 15.2 平台矩阵
 
 | 平台    | 打包方式    | 分发渠道               | 自动化程度 |
 | ------- | ----------- | ---------------------- | ---------- |
@@ -1789,9 +2875,9 @@ pnpm test:docker:live-gateway
 | CLI     | npm         | npm registry           | 完全自动化 |
 | Docker  | 多架构镜像  | Docker Hub             | 完全自动化 |
 
-### 14.3 关键模式
+### 15.3 关键模式
 
-#### 14.3.1 版本一致性模式
+#### 15.3.1 版本一致性模式
 
 ```typescript
 // scripts/release-check.ts
@@ -1807,7 +2893,7 @@ const versionLocations = {
 // 所有版本必须一致才能发布
 ```
 
-#### 14.3.2 macOS 打包模式
+#### 15.3.2 macOS 打包模式
 
 ```bash
 # scripts/package-mac-app.sh
@@ -1831,7 +2917,7 @@ xcrun notarytool submit dist/OpenClaw.zip \
 create-dmg dist/OpenClaw.app dist/
 ```
 
-#### 14.3.3 npm 发布模式
+#### 15.3.3 npm 发布模式
 
 ```bash
 # 使用 1Password 管理 OTP
@@ -1849,7 +2935,7 @@ npm view openclaw version --userconfig "$(mktemp)"
 tmux kill-session -t release
 ```
 
-#### 14.3.4 Docker 发布模式
+#### 15.3.4 Docker 发布模式
 
 ```dockerfile
 # Dockerfile
@@ -1876,7 +2962,7 @@ docker buildx build \
   --push .
 ```
 
-#### 14.3.5 发布检查清单
+#### 15.3.5 发布检查清单
 
 ```typescript
 // scripts/release-check.ts
@@ -1892,7 +2978,7 @@ const releaseChecklist = [
 ];
 ```
 
-### 14.4 最佳实践
+### 15.4 最佳实践
 
 1. **版本锁定**：使用 lockfile 确保依赖一致性
 2. **自动化测试**：发布前自动运行所有测试
@@ -1902,9 +2988,9 @@ const releaseChecklist = [
 
 ---
 
-## 15. CI/CD 与工作流
+## 16. CI/CD 与工作流
 
-### 15.1 核心理念
+### 16.1 核心理念
 
 **智能检测，并行执行**
 
@@ -1913,7 +2999,7 @@ const releaseChecklist = [
 - 缓存优化构建速度
 - 失败自动重试
 
-### 15.2 工作流架构
+### 16.2 工作流架构
 
 ```
 ┌─────────────────────────────────────┐
@@ -1939,9 +3025,9 @@ const releaseChecklist = [
 └─────────────────────────────────────┘
 ```
 
-### 15.3 关键工作流
+### 16.3 关键工作流
 
-#### 15.3.1 CI 工作流（ci.yml）
+#### 16.3.1 CI 工作流（ci.yml）
 
 ```yaml
 # 智能变更检测
@@ -1957,7 +3043,7 @@ concurrency:
   cancel-in-progress: true  # PR 更新取消旧任务
 ```
 
-#### 15.3.2 安装烟测（install-smoke.yml）
+#### 16.3.2 安装烟测（install-smoke.yml）
 
 ```yaml
 # 验证安装脚本可用性
@@ -1971,7 +3057,7 @@ concurrency:
 # 3. 上一个版本安装
 ```
 
-#### 15.3.3 Docker 发布（docker-release.yml）
+#### 16.3.3 Docker 发布（docker-release.yml）
 
 ```yaml
 # 多架构构建
@@ -1987,7 +3073,7 @@ concurrency:
     cache-to: type=gha,mode=max
 ```
 
-#### 15.3.4 自动化响应（auto-response.yml）
+#### 16.3.4 自动化响应（auto-response.yml）
 
 ```yaml
 # 自动标记 PR
@@ -1999,9 +3085,9 @@ concurrency:
   uses: ./.github/actions/auto-respond
 ```
 
-### 15.4 GitHub Actions 最佳实践
+### 16.4 GitHub Actions 最佳实践
 
-#### 15.4.1 自定义 Action 复用
+#### 16.4.1 自定义 Action 复用
 
 ```yaml
 # .github/actions/setup-pnpm-store-cache/action.yml
@@ -2026,7 +3112,7 @@ runs:
         key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 ```
 
-#### 15.4.2 并发控制
+#### 16.4.2 并发控制
 
 ```yaml
 concurrency:
@@ -2034,7 +3120,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 ```
 
-#### 15.4.3 失败重试
+#### 16.4.3 失败重试
 
 ```yaml
 - name: Flaky test retry
@@ -2045,7 +3131,7 @@ concurrency:
     command: pnpm test:live
 ```
 
-### 15.5 最佳实践
+### 16.5 最佳实践
 
 1. **快速失败**：先运行快速测试，失败立即停止
 2. **缓存策略**：缓存依赖和构建产物
@@ -2055,9 +3141,9 @@ concurrency:
 
 ---
 
-## 16. 国际化系统
+## 17. 国际化系统
 
-### 16.1 核心理念
+### 17.1 核心理念
 
 **翻译记忆，术语统一**
 
@@ -2066,7 +3152,7 @@ concurrency:
 - 自动化翻译流程
 - 人工审核关键内容
 
-### 16.2 架构层次
+### 17.2 架构层次
 
 ```
 ┌─────────────────────────────────────┐
@@ -2098,9 +3184,9 @@ concurrency:
 └─────────────────────────────────────┘
 ```
 
-### 16.3 关键模式
+### 17.3 关键模式
 
-#### 16.3.1 翻译记忆库模式
+#### 17.3.1 翻译记忆库模式
 
 ```typescript
 // docs/.i18n/zh-CN.tm.jsonl
@@ -2117,7 +3203,7 @@ function translateWithMemory(
 }
 ```
 
-#### 16.3.2 术语表模式
+#### 17.3.2 术语表模式
 
 ```json
 // docs/.i18n/glossary.zh-CN.json
@@ -2146,7 +3232,7 @@ function applyGlossary(
 }
 ```
 
-#### 16.3.3 自动化流程模式
+#### 17.3.3 自动化流程模式
 
 ```bash
 # scripts/docs-i18n
@@ -2168,7 +3254,7 @@ generate_docs docs/zh-CN/
 # 检查关键章节翻译质量
 ```
 
-### 16.4 最佳实践
+### 17.4 最佳实践
 
 1. **术语先行**：先定义术语表再翻译
 2. **记忆复用**：避免相同内容重复翻译
@@ -2178,9 +3264,9 @@ generate_docs docs/zh-CN/
 
 ---
 
-## 17. 文档系统
+## 18. 文档系统
 
-### 17.1 核心理念
+### 18.1 核心理念
 
 **文档即代码，自动化生成**
 
@@ -2189,7 +3275,7 @@ generate_docs docs/zh-CN/
 - 自动化拼写检查
 - 版本化文档
 
-### 17.2 架构层次
+### 18.2 架构层次
 
 ```
 ┌─────────────────────────────────────┐
@@ -2221,9 +3307,9 @@ generate_docs docs/zh-CN/
 └─────────────────────────────────────┘
 ```
 
-### 17.3 关键模式
+### 18.3 关键模式
 
-#### 17.3.1 文档结构模式
+#### 18.3.1 文档结构模式
 
 ```
 docs/
@@ -2250,7 +3336,7 @@ docs/
     └── faq.md
 ```
 
-#### 17.3.2 Frontmatter 模式
+#### 18.3.2 Frontmatter 模式
 
 ```markdown
 ---
@@ -2265,7 +3351,7 @@ tags:
 ---
 ```
 
-#### 17.3.3 链接规范模式
+#### 18.3.3 链接规范模式
 
 ```markdown
 <!-- 内部链接：根相对路径，无 .md 后缀 -->
@@ -2283,7 +3369,7 @@ tags:
 ✅ [Config](/gateway/configuration) <!-- 根相对路径 -->
 ```
 
-#### 17.3.4 质量检查模式
+#### 18.3.4 质量检查模式
 
 ```bash
 # 链接审计
@@ -2302,7 +3388,7 @@ pnpm lint:docs
 # 统一的文档风格
 ```
 
-#### 17.3.5 API 文档自动生成
+#### 18.3.5 API 文档自动生成
 
 ```typescript
 // 从 TypeBox Schema 生成文档
@@ -2321,7 +3407,7 @@ ${generatePropertiesTable(schema)}
 `;
 ```
 
-### 17.4 最佳实践
+### 18.4 最佳实践
 
 1. **单一来源**：文档只在一个地方定义
 2. **自动化检查**：CI 自动检查链接和拼写
@@ -2331,11 +3417,11 @@ ${generatePropertiesTable(schema)}
 
 ---
 
-## 18. 项目管理最佳实践
+## 19. 项目管理最佳实践
 
-### 18.1 代码组织
+### 19.1 代码组织
 
-#### 18.1.1 目录结构约定
+#### 19.1.1 目录结构约定
 
 ```
 openclaw/
@@ -2358,7 +3444,7 @@ openclaw/
 └── tests/               # 测试（部分与源码同目录）
 ```
 
-#### 18.1.2 文件命名规范
+#### 19.1.2 文件命名规范
 
 ```typescript
 // 测试文件：*.test.ts
@@ -2378,9 +3464,9 @@ path - utils.ts;
 string - utils.ts;
 ```
 
-### 18.2 Git 工作流
+### 19.2 Git 工作流
 
-#### 18.2.1 分支策略
+#### 19.2.1 分支策略
 
 ```
 main              # 主分支，随时可发布
@@ -2390,7 +3476,7 @@ main              # 主分支，随时可发布
 └── hotfix/*      # 紧急修复
 ```
 
-#### 18.2.2 提交信息规范
+#### 19.2.2 提交信息规范
 
 ```bash
 # Conventional Commits
@@ -2411,7 +3497,7 @@ fix(config): resolve env substitution edge case
 docs(gateway): update authentication guide
 ```
 
-#### 18.2.3 PR 流程
+#### 19.2.3 PR 流程
 
 ```
 1. 创建功能分支
@@ -2436,9 +3522,9 @@ docs(gateway): update authentication guide
    - 删除功能分支
 ```
 
-### 18.3 依赖管理
+### 19.3 依赖管理
 
-#### 18.3.1 包管理器选择
+#### 19.3.1 包管理器选择
 
 ```json
 {
@@ -2452,7 +3538,7 @@ docs(gateway): update authentication guide
 }
 ```
 
-#### 18.3.2 依赖分类
+#### 19.3.2 依赖分类
 
 ```json
 {
@@ -2477,9 +3563,9 @@ docs(gateway): update authentication guide
 }
 ```
 
-### 18.4 质量管理
+### 19.4 质量管理
 
-#### 18.4.1 代码检查清单
+#### 19.4.1 代码检查清单
 
 ```bash
 # 预检查
@@ -2497,7 +3583,7 @@ pnpm docs:check-links
 pnpm docs:spellcheck
 ```
 
-#### 18.4.2 发布检查清单
+#### 19.4.2 发布检查清单
 
 ```bash
 # 发布前检查
@@ -2512,9 +3598,9 @@ pnpm release:check
 # ✓ 性能回归检查
 ```
 
-### 18.5 团队协作
+### 19.5 团队协作
 
-#### 18.5.1 Code Review 指南
+#### 19.5.1 Code Review 指南
 
 ```markdown
 ## Reviewer 职责
@@ -2532,7 +3618,7 @@ pnpm release:check
 - 大 PR (> 500 行): 拆分或安排专门 review 时间
 ```
 
-#### 18.5.2 Issue 管理
+#### 19.5.2 Issue 管理
 
 ```markdown
 ## Issue 模板
@@ -2551,9 +3637,9 @@ pnpm release:check
 - 替代方案
 ```
 
-### 18.6 知识管理
+### 19.6 知识管理
 
-#### 18.6.1 决策记录（ADR）
+#### 19.6.1 决策记录（ADR）
 
 ```markdown
 # ADR-001: 选择 TypeBox 作为协议 Schema
@@ -2589,7 +3675,7 @@ Accepted
 - 额外的构建步骤
 ```
 
-#### 18.6.2 技能文档
+#### 19.6.2 技能文档
 
 ```markdown
 ## AGENTS.md / skills/
@@ -2602,7 +3688,7 @@ Accepted
 - 陷阱和注意事项
 ```
 
-### 18.7 最佳实践
+### 19.7 最佳实践
 
 1. **文档化一切**：决策、流程、陷阱
 2. **自动化重复工作**：构建、测试、部署
@@ -2622,10 +3708,32 @@ OpenClaw 项目的架构思想可以概括为以下核心原则：
 2. **安全优先**：零信任、最小权限、严格验证
 3. **插件隔离**：稳定 API、运行时注入、禁止直接导入
 4. **优雅容错**：重试、退避、熔断、降级
-5. **可观测性**：结构化日志、诊断上下文、性能追踪
-6. **模块化**：明确边界、依赖注入、可测试优先
-7. **媒体统一**：统一接口、按需处理、透明优化
-8. **内存抽象**：多后端支持、智能检索、自动清理
+5. **错误优雅**：统一错误码、用户友好消息、智能降级
+6. **可观测性**：结构化日志、诊断上下文、性能追踪
+7. **模块化**：明确边界、依赖注入、可测试优先
+8. **媒体统一**：统一接口、按需处理、透明优化
+9. **内存抽象**：多后端支持、智能检索、自动清理
+
+### 性能指标基准
+
+| 操作            | 目标延迟   | P99 延迟 | 吞吐量       | 说明              |
+| --------------- | ---------- | -------- | ------------ | ----------------- |
+| 配置加载        | < 100ms    | < 200ms  | -            | 包含 Schema 验证  |
+| 网关连接建立    | < 50ms     | < 100ms  | -            | WebSocket 握手    |
+| 消息路由延迟    | < 20ms     | < 50ms   | > 1000 msg/s | 网关内部路由      |
+| 会话查询（P95） | < 200ms    | < 500ms  | -            | JSONL 文件读取    |
+| 记忆检索（P95） | < 500ms    | < 1000ms | -            | 向量相似度搜索    |
+| 媒体处理        | < 2s       | < 5s     | -            | 图片缩放/格式转换 |
+| 插件加载        | < 100ms/个 | < 200ms  | -            | 包含 Runtime 注入 |
+| 并发连接数      | -          | -        | > 100        | 单网关实例        |
+| 内存占用基线    | -          | -        | < 500MB      | 空闲状态          |
+
+**性能优化建议**：
+
+- **降低延迟**：使用更快的模型（如 `gpt-4o-mini`）、启用缓存、减少上下文长度
+- **提升吞吐**：批量操作（嵌入生成、消息发送）、并发处理、连接池
+- **减少内存**：限制会话大小、配置记忆清理策略、定期垃圾回收
+- **监控指标**：跟踪 P95/P99 延迟、错误率、吞吐量、并发连接数
 
 ### 项目管理原则
 
@@ -2634,8 +3742,8 @@ OpenClaw 项目的架构思想可以概括为以下核心原则：
 3. **多平台部署**：自动化打包、版本一致、渐进发布
 4. **文档即代码**：自动化检查、版本控制、搜索友好
 5. **国际化**：翻译记忆、术语统一、人机协作
-6. **质量内建**：预检查清单、发布检查、持续改进
-7. **知识管理**：决策记录、技能文档、团队协作
+6. **知识管理**：决策记录、技能文档、团队协作
+7. **质量内建**：预检查清单、发布检查、持续改进
 
 这些架构模式不仅适用于 OpenClaw，也可以作为通用范式应用于其他项目。
 
@@ -2725,7 +3833,37 @@ OpenClaw 项目的架构思想可以概括为以下核心原则：
 
 ### B.2 开发实践
 
-#### Q4: 如何添加新的消息通道？
+#### Q4: 如何设计错误处理系统？
+
+**A**: 错误处理三个层次：
+
+1. **错误分类**：
+
+   - 可恢复错误（网络超时、速率限制）
+   - 不可恢复错误（配置错误、认证失败）
+   - 可降级错误（非核心功能失败）
+
+2. **错误包装**：
+
+   ```typescript
+   try {
+     await operation();
+   } catch (cause) {
+     throw new ClawError(
+       ErrorCodes.OPERATION_FAILED,
+       "操作失败",
+       { context },
+       cause
+     );
+   }
+   ```
+
+3. **错误传播**：
+   - 底层添加上下文
+   - 中层判断可恢复性
+   - 顶层生成用户消息
+
+#### Q5: 如何添加新的消息通道？
 
 **A**: 推荐两种方式：
 
@@ -2756,7 +3894,7 @@ mkdir src/channels/my-channel
 
 **选择建议**：优先使用插件，除非是官方核心通道。
 
-#### Q5: 配置修改后如何生效？
+#### Q6: 配置修改后如何生效？
 
 **A**: 三种方式：
 
@@ -2782,7 +3920,7 @@ mkdir src/channels/my-channel
    openclaw gateway run
    ```
 
-#### Q6: 如何调试网关连接问题？
+#### Q7: 如何调试网关连接问题？
 
 **A**: 诊断步骤：
 
@@ -2805,7 +3943,7 @@ netstat -an | grep 18789
 
 ### B.3 性能优化
 
-#### Q7: 系统内存占用过高怎么办？
+#### Q8: 系统内存占用过高怎么办？
 
 **A**: 优化建议：
 
@@ -2851,7 +3989,7 @@ netstat -an | grep 18789
    top -pid $(pgrep -f openclaw-gateway)
    ```
 
-#### Q8: 如何优化响应速度？
+#### Q9: 如何优化响应速度？
 
 **A**: 性能调优方向：
 
@@ -2863,7 +4001,7 @@ netstat -an | grep 18789
 
 ### B.4 安全与运维
 
-#### Q9: 如何备份和恢复配置？
+#### Q10: 如何备份和恢复配置？
 
 **A**: 备份：
 
@@ -2891,7 +4029,7 @@ tar -xzf sessions-backup.tar.gz -C ~/
 openclaw gateway restart
 ```
 
-#### Q10: 设备配对失败如何处理？
+#### Q11: 设备配对失败如何处理？
 
 **A**: 排查步骤：
 
@@ -2970,8 +4108,310 @@ openclaw gateway restart
 - [ ] 检查磁盘空间
 - [ ] 恢复备份（如有）
 
+**错误处理失败**：
+
+- [ ] 检查错误码是否正确
+- [ ] 验证错误上下文是否完整
+- [ ] 查看错误日志堆栈追踪
+- [ ] 确认可恢复性判断是否正确
+- [ ] 检查降级策略是否生效
+
+### C.4 新开发者入职检查清单
+
+- [ ] 阅读 [1. 配置系统设计](#1-配置系统设计)
+- [ ] 阅读 [2. CLI 系统架构](#2-cli-系统架构)
+- [ ] 阅读 [10. 模块边界与依赖注入](#10-模块边界与依赖注入)
+- [ ] 完成本地环境搭建
+- [ ] 运行第一个测试（`pnpm test`）
+- [ ] 阅读 AGENTS.md
+- [ ] 选择一个简单的 Issue 开始
+- [ ] 了解错误处理系统（[13. 错误处理系统](#13-错误处理系统)）
+
+### C.5 代码审查检查清单
+
+- [ ] 代码是否遵循类型安全原则？
+- [ ] 是否添加了足够的错误处理？
+- [ ] 测试覆盖率是否 > 70%？
+- [ ] 文档是否同步更新？
+- [ ] 是否有性能回归风险？
+- [ ] 是否有安全隐患？
+- [ ] 错误消息是否用户友好？
+- [ ] 日志是否包含足够上下文？
+- [ ] 是否遵循模块边界规范？
+
 ---
 
 **文档版本**：2026.3.3  
-**最后更新**：2026-03-03  
+**最后更新**：2026-03-04  
 **维护者**：OpenClaw Team
+
+---
+
+## 附录 D：文档维护指南
+
+### D.1 何时更新本文档
+
+本文档应该在以下情况更新：
+
+- ✅ 添加新架构组件或核心模块
+- ✅ 修改核心接口或协议 Schema
+- ✅ 发现新的最佳实践或反模式
+- ✅ 修复文档错误或过时信息
+- ✅ 添加新的检查清单或故障排查指南
+- ❌ 不要为小的代码重构更新文档（除非改变架构）
+
+### D.2 文档更新流程
+
+**1. 修改文档**：
+
+```bash
+# 编辑文档
+vim learning/skills/architecture-principles.md
+
+# 更新版本历史（在文档开头）
+# | 版本  | 日期       | 变更内容                          | 作者          |
+# | ----- | ---------- | --------------------------------- | ------------- |
+# | 1.3.0 | 2026-03-04 | 添加快速开始、错误流程图、威胁模型 | OpenClaw Team |
+```
+
+**2. 运行质量检查**：
+
+```bash
+# 检查 Markdown 格式
+pnpm lint:docs
+
+# 检查内部链接（如果有）
+pnpm docs:check-links
+
+# 检查拼写（如果有）
+pnpm docs:spellcheck
+```
+
+**3. 验证 Mermaid 图表**：
+
+- 确保所有 mermaid 代码块有正确的开闭标记
+- 在 Markdown 预览中验证图表渲染
+- 检查图表中的中文是否显示正常
+
+**4. 更新目录**：
+
+- 如果添加新章节，更新目录中的对应条目
+- 确保章节编号连续且正确
+- 更新快速导航中的引用
+
+**5. 提交 PR**：
+
+```bash
+# 提交更改
+git add learning/skills/architecture-principles.md
+git commit -m "docs: 更新架构原则文档（添加快速开始、威胁模型等）"
+
+# 推送并创建 PR
+git push origin feature/docs-update
+```
+
+### D.3 文档质量指标
+
+| 指标                   | 目标值 | 检查方法                |
+| ---------------------- | ------ | ----------------------- |
+| 内部链接有效性         | > 99%  | `pnpm docs:check-links` |
+| 代码示例可运行率       | > 95%  | 手动验证或自动化测试    |
+| 文档覆盖率（核心功能） | 100%   | 对照代码库检查          |
+| 图表渲染正确率         | 100%   | Markdown 预览验证       |
+| 术语一致性             | > 95%  | 对照术语表检查          |
+
+### D.4 文档风格指南
+
+**标题层级**：
+
+```markdown
+## 一级章节（如：## 1. 配置系统设计）
+
+### 二级章节（如：### 1.1 核心理念）
+
+#### 三级章节（如：#### 1.3.1 配置 IO 模式）
+```
+
+**代码块标记**：
+
+````markdown
+<!-- TypeScript 代码块 -->
+
+```typescript
+const code = "example";
+```
+
+<!-- Bash 代码块 -->
+
+```bash
+pnpm install
+```
+
+<!-- Mermaid 图表 -->
+
+```mermaid
+graph TD
+    A --> B
+```
+````
+
+**链接规范**：
+
+```markdown
+<!-- 内部链接：使用章节标题的 slug -->
+
+[配置系统设计](#1-配置系统设计)
+[快速开始](#快速开始)
+
+<!-- 外部链接：使用完整 URL -->
+
+[TypeBox](https://github.com/sinclairzx81/typebox)
+```
+
+**表格格式**：
+
+```markdown
+| 列 1   | 列 2   | 列 3   |
+| ------ | ------ | ------ |
+| 内容 1 | 内容 2 | 内容 3 |
+| 内容 4 | 内容 5 | 内容 6 |
+```
+
+### D.5 版本历史维护
+
+**版本命名规则**：
+
+- `主版本。次版本.修订版本`
+- 主版本：重大架构变更
+- 次版本：新增章节或重要内容
+- 修订版本：修正错误或小改进
+
+**变更日志示例**：
+
+```markdown
+| 版本  | 日期       | 变更内容                                                                  | 作者          |
+| ----- | ---------- | ------------------------------------------------------------------------- | ------------- |
+| 1.3.0 | 2026-03-04 | 添加快速开始章节、错误处理流程图、安全威胁模型、数据迁移策略              | OpenClaw Team |
+| 1.2.0 | 2026-03-04 | 修正章节编号错误、修复 mermaid 图表、添加系统全景架构图、补充性能指标基准 | OpenClaw Team |
+| 1.1.0 | 2026-03-04 | 新增错误处理系统章节、优化导航、补充检查清单                              | OpenClaw Team |
+| 1.0.0 | 2026-03-03 | 初始版本                                                                  | OpenClaw Team |
+```
+
+### D.6 多语言支持
+
+**翻译流程**：
+
+1. 更新英文文档
+2. 运行翻译脚本（如果有）
+3. 人工审核关键章节
+4. 更新两种语言的版本历史
+
+**翻译注意事项**：
+
+- 保持术语一致性（参考术语表）
+- 代码示例和命令保持英文
+- 图表中的文字需要翻译
+- 链接锚点需要匹配目标语言版本
+
+### D.7 反馈与改进
+
+**收集反馈**：
+
+- 在 PR 描述中询问读者体验
+- 定期审查文档访问统计（如果有）
+- 收集团队成员的改进建议
+
+**持续改进**：
+
+- 每季度审查一次文档完整性
+- 根据常见问题更新 FAQ 章节
+- 添加新的检查清单和最佳实践
+
+---
+
+## 附录 E：索引
+
+### E.1 按关键词索引
+
+| 关键词       | 章节位置                                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **配置**     | [1](#1-配置系统设计), [1.2](#12-架构层次), [5.3](#53-关键模式), [B.4](#b4-安全与运维)                                   |
+| **错误处理** | [6](#6-重试与容错), [13](#13-错误处理系统), [13.5](#135-数据迁移策略), [B.2](#b2-开发实践), [C.3](#c3-故障排查检查清单) |
+| **插件**     | [3](#3-插件化架构), [3.3](#33-关键模式), [10.2.3](#1023-模块边界模式), [C.1](#c1-添加新插件检查清单)                    |
+| **性能**     | [6.4](#64-性能考量), [7.5](#75-性能考量), [8.3](#83-最佳实践), [12.5](#124-最佳实践), [B.3](#b3-性能优化)               |
+| **安全**     | [4](#4-网关通信协议), [9](#9-安全与认证), [9.4](#94-安全威胁模型), [B.4](#b4-安全与运维), [C.2](#c2-发布前检查清单)     |
+| **会话**     | [5](#5-会话管理), [5.3](#53-关键模式), [12](#12-内存管理系统), [B.1](#b1-架构设计)                                      |
+| **测试**     | [14](#14-测试系统架构), [14.3](#143-关键模式), [15](#15-部署与发布系统), [C.2](#c2-发布前检查清单)                      |
+| **部署**     | [15](#15-部署与发布系统), [16](#16-cicd-与工作流), [C.2](#c2-发布前检查清单)                                            |
+| **日志**     | [8](#8-日志与可观测性), [13.6](#136-错误日志与监控), [B.2](#b2-开发实践)                                                |
+| **迁移**     | [13.5](#135-数据迁移策略), [15.3](#153-关键模式)                                                                        |
+
+### E.2 按图表索引
+
+| 图表类型   | 位置                          | 说明               |
+| ---------- | ----------------------------- | ------------------ |
+| 系统架构图 | [系统全景架构](#系统全景架构) | 5 层架构可视化     |
+| 流程图     | [1.2.1](#121-配置加载流程)    | 配置加载流程       |
+| 序列图     | [4.2.1](#421-连接流程)        | 网关连接流程       |
+| 状态图     | [3.2.1](#321-插件生命周期)    | 插件生命周期       |
+| 流程图     | [13.2.1](#1321-错误处理流程)  | 错误分类与处理流程 |
+| 流程图     | [9.4.3](#943-安全响应流程)    | 安全事件响应流程   |
+
+### E.3 按检查清单索引
+
+| 检查清单     | 位置                            | 用途               |
+| ------------ | ------------------------------- | ------------------ |
+| 添加新插件   | [C.1](#c1-添加新插件检查清单)   | 插件开发完成度检查 |
+| 发布前检查   | [C.2](#c2-发布前检查清单)       | 发布前质量保证     |
+| 故障排查     | [C.3](#c3-故障排查检查清单)     | 常见问题诊断       |
+| 新开发者入职 | [C.4](#c4-新开发者入职检查清单) | 新人培训指南       |
+| 代码审查     | [C.5](#c5-代码审查检查清单)     | PR 审查要点        |
+| 安全审计     | [9.4.2](#942-安全审计清单)      | 安全检查           |
+
+### E.4 按代码示例索引
+
+| 主题           | 位置                           |
+| -------------- | ------------------------------ |
+| 配置 IO        | [1.3.1](#131-配置 io 模式)     |
+| 环境变量替换   | [1.3.2](#132-环境变量替换模式) |
+| 重试逻辑       | [6.2.1](#621-通用重试模式)     |
+| 熔断器         | [6.2.3](#623-熔断器模式)       |
+| TypeBox Schema | [7.2.1](#721-typebox-协议定义) |
+| Zod 验证       | [7.2.2](#722-zod-配置验证)     |
+| 依赖注入       | [10.2.1](#1021-依赖注入模式)   |
+| 错误包装       | [13.4.1](#1341-错误包装模式)   |
+| 降级策略       | [13.5.2](#1352-降级策略)       |
+| 数据迁移       | [13.5.2](#1352-schema-版本化)  |
+
+### E.5 按最佳实践索引
+
+| 章节     | 最佳实践位置                                    |
+| -------- | ----------------------------------------------- |
+| 配置系统 | [1.5](#15-最佳实践)                             |
+| CLI 架构 | [2.5](#25-最佳实践)                             |
+| 插件系统 | [3.5](#35-最佳实践)                             |
+| 网关协议 | [4.5](#45-最佳实践)                             |
+| 会话管理 | [5.5](#55-最佳实践)                             |
+| 重试容错 | [6.5](#65-最佳实践)                             |
+| 类型安全 | [7.5](#75-最佳实践)                             |
+| 日志观测 | [8.5](#83-最佳实践)                             |
+| 安全认证 | [9.3](#93-最佳实践), [9.4.5](#945-安全最佳实践) |
+| 模块边界 | [10.5](#103-最佳实践)                           |
+| 媒体处理 | [11.5](#114-最佳实践)                           |
+| 内存管理 | [12.5](#124-最佳实践)                           |
+| 错误处理 | [13.8](#138-最佳实践)                           |
+| 数据迁移 | [13.5.7](#1357-最佳实践)                        |
+| 测试系统 | [14.5](#144-最佳实践)                           |
+| 部署发布 | [15.5](#154-最佳实践)                           |
+| CI/CD    | [16.5](#165-最佳实践)                           |
+| 国际化   | [17.5](#174-最佳实践)                           |
+| 文档系统 | [18.5](#184-最佳实践)                           |
+| 项目管理 | [19.7](#197-最佳实践)                           |
+
+---
+
+**相关文档**：
+
+- [OpenClaw AGENTS.md](../../../AGENTS.md) - 仓库级代理指南
+- [Contributing Guide](../../../CONTRIBUTING.md) - 贡献指南
+- [Code of Conduct](../../../CODE_OF_CONDUCT.md) - 行为准则
