@@ -4,9 +4,9 @@ import type {
   OpenClawConfig,
   PluginRuntime,
   ResolvedLineAccount,
-} from "openclaw/plugin-sdk";
+} from "openclaw/plugin-sdk/line";
 import { describe, expect, it, vi } from "vitest";
-import { createRuntimeEnv } from "../../test-utils/runtime-env.js";
+import { createRuntimeEnv } from "../../../test/helpers/extensions/runtime-env.js";
 import { linePlugin } from "./channel.js";
 import { setLineRuntime } from "./runtime.js";
 

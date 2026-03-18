@@ -88,8 +88,8 @@ export function createInboundDebouncer<T>(params: InboundDebounceCreateParams<T>
     if (buffer.timeout) {
       clearTimeout(buffer.timeout);
     }
-    buffer.timeout = setTimeout(() => {
-      void flushBuffer(key, buffer);
+    buffer.timeout = setTimeout(async () => {
+      await flushBuffer(key, buffer);
     }, buffer.debounceMs);
     buffer.timeout.unref?.();
   };
@@ -103,7 +103,11 @@ export function createInboundDebouncer<T>(params: InboundDebounceCreateParams<T>
       if (key && buffers.has(key)) {
         await flushKey(key);
       }
-      await params.onFlush([item]);
+      try {
+        await params.onFlush([item]);
+      } catch (err) {
+        params.onError?.(err, [item]);
+      }
       return;
     }
 

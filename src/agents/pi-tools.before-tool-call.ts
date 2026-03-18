@@ -2,6 +2,7 @@ import type { ToolLoopDetectionConfig } from "../config/types.tools.js";
 import type { SessionState } from "../logging/diagnostic-session-state.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { getGlobalHookRunner } from "../plugins/hook-runner-global.js";
+import { createLazyRuntimeSurface } from "../shared/lazy-runtime.js";
 import { isPlainObject } from "../utils.js";
 import { normalizeToolName } from "./tool-policy.js";
 import type { AnyAgentTool } from "./tools/common.js";
@@ -23,6 +24,11 @@ const adjustedParamsByToolCallId = new Map<string, unknown>();
 const MAX_TRACKED_ADJUSTED_PARAMS = 1024;
 const LOOP_WARNING_BUCKET_SIZE = 10;
 const MAX_LOOP_WARNING_KEYS = 256;
+
+const loadBeforeToolCallRuntime = createLazyRuntimeSurface(
+  () => import("./pi-tools.before-tool-call.runtime.js"),
+  ({ beforeToolCallRuntime }) => beforeToolCallRuntime,
+);
 
 function buildAdjustedParamsKey(params: { runId?: string; toolCallId: string }): string {
   if (params.runId && params.runId.trim()) {
@@ -62,8 +68,7 @@ async function recordLoopOutcome(args: {
     return;
   }
   try {
-    const { getDiagnosticSessionState } = await import("../logging/diagnostic-session-state.js");
-    const { recordToolCallOutcome } = await import("./tool-loop-detection.js");
+    const { getDiagnosticSessionState, recordToolCallOutcome } = await loadBeforeToolCallRuntime();
     const sessionState = getDiagnosticSessionState({
       sessionKey: args.ctx.sessionKey,
       sessionId: args.ctx?.agentId,
@@ -91,10 +96,8 @@ export async function runBeforeToolCallHook(args: {
   const params = args.params;
 
   if (args.ctx?.sessionKey) {
-    const { getDiagnosticSessionState } = await import("../logging/diagnostic-session-state.js");
-    const { logToolLoopAction } = await import("../logging/diagnostic.js");
-    const { detectToolCallLoop, recordToolCall } = await import("./tool-loop-detection.js");
-
+    const { getDiagnosticSessionState, logToolLoopAction, detectToolCallLoop, recordToolCall } =
+      await loadBeforeToolCallRuntime();
     const sessionState = getDiagnosticSessionState({
       sessionKey: args.ctx.sessionKey,
       sessionId: args.ctx?.agentId,

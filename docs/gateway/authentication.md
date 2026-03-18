@@ -15,6 +15,8 @@ flows are also supported when they match your provider account model.
 See [/concepts/oauth](/concepts/oauth) for the full OAuth flow and storage
 layout.
 For SecretRef-based auth (`env`/`file`/`exec` providers), see [Secrets Management](/gateway/secrets).
+For credential eligibility/reason-code rules used by `models status --probe`, see
+[Auth Credential Semantics](/auth-credential-semantics).
 
 ## Recommended setup (API key, any provider)
 
@@ -47,7 +49,7 @@ openclaw models status
 openclaw doctor
 ```
 
-If you’d rather not manage env vars yourself, the onboarding wizard can store
+If you’d rather not manage env vars yourself, onboarding can store
 API keys for daemon use: `openclaw onboard`.
 
 See [Help](/help) for details on env inheritance (`env.shellEnv`,
@@ -157,7 +159,7 @@ Use `--agent <id>` to target a specific agent; omit it to use the configured def
 
 ## Troubleshooting
 
-### “No credentials found”
+### "No credentials found"
 
 If the Anthropic token profile is missing, run `claude setup-token` on the
 **gateway host**, then re-check:
